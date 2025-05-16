@@ -1,13 +1,13 @@
 {
-    "name": "EasyMaterials",
-    "rootNamespace": "EasyMaterials",
+    "name": "Nexcide.EasyMaterials",
+    "rootNamespace": "Nexcide.EasyMaterials",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

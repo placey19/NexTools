@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-using static EasyMaterials.EasyMaterialUtil;
+using static Nexcide.EasyMaterials.EasyMaterialUtil;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     class SettingsContent {
 

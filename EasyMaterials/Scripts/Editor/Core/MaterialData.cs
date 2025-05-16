@@ -2,9 +2,9 @@
 using UnityEditor;
 using UnityEngine;
 
-using static EasyMaterials.EasyMaterialUtil;
+using static Nexcide.EasyMaterials.EasyMaterialUtil;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     [Serializable]
     public class MaterialData {

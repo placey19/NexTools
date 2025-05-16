@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     /// <summary>
     /// Collection of MaterialData objects that's stored in a List but also maintains a Dictionary to get MaterialData from the

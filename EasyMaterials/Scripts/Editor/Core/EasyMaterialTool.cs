@@ -6,10 +6,10 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-using static EasyMaterials.EasyMaterialUtil;
+using static Nexcide.EasyMaterials.EasyMaterialUtil;
 using static UnityEditor.EditorGUILayout;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     public class EasyMaterialTool : EditorWindow, IHasCustomMenu {
 

@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     /// <summary>
     /// Data that's stored to asset file for a collection of materials.

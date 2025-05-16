@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     /// <summary>
     /// Utility methods for the Easy Materials edtior tool.

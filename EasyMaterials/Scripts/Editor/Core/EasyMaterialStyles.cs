@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     static class EasyMaterialStyles {
 

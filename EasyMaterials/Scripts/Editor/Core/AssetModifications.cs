@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace EasyMaterials {
+namespace Nexcide.EasyMaterials {
 
     /// <summary>
     /// To allow registering and unregistering for callbacks to the IsOpenForEdit() method.
