@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Static Noise
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: 749306297187883395}
+--- !u!114 &749306297187883395
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f815dc9337f94242935ce81e5cdedec, type: 3}
+  m_Name: StaticNoise
+  m_EditorClassIdentifier: 
+  active: 1
+  Blend:
+    m_OverrideState: 1
+    m_Value: 0.75
+  StaticColor:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    hdr: 1
+  StaticSize:
+    m_OverrideState: 1
+    m_Value: 2
+  StaticMin:
+    m_OverrideState: 1
+    m_Value: 0
+  StaticHz:
+    m_OverrideState: 1
+    m_Value: 25
+  LinesColor:
+    m_OverrideState: 0
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    hdr: 1
+  LinesScale:
+    m_OverrideState: 1
+    m_Value: 50
+  LinesMin:
+    m_OverrideState: 1
+    m_Value: -1.19
+  LinesSpeed:
+    m_OverrideState: 1
+    m_Value: 0.25
+  LinesHz:
+    m_OverrideState: 1
+    m_Value: 25
