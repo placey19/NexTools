@@ -4,9 +4,9 @@ using UnityEditor.ProBuilder;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
-using static Nexcide.ProBuilderUtil;
+using static Nexcide.NexTools.ProBuilderUtil;
 
-namespace Nexcide {
+namespace Nexcide.NexTools {
 
     public class ProBuilderExt : EditorWindow {
 

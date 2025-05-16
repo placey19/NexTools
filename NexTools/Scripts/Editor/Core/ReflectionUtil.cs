@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using UnityEngine;
 
-namespace Nexcide {
+namespace Nexcide.NexTools {
 
     public static class ReflectionUtil {
 

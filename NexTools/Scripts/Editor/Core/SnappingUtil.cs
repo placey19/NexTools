@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Nexcide {
+namespace Nexcide.NexTools {
 
     /// <summary>
     /// Snapping utility that prioritizes ProGrids over EditorSnapSettings.
@@ -27,7 +27,7 @@ namespace Nexcide {
         }
 
         public static Vector3 GetSnapVector() {
-            Vector3 snapValue = Vector3.zero;
+            Vector3 snapValue;
 
             if (ProGridsUtil.SnapValue(out float proGridsSnapValue)) {
                 snapValue = new Vector3(proGridsSnapValue, proGridsSnapValue, proGridsSnapValue);
@@ -39,7 +39,7 @@ namespace Nexcide {
         }
 
         public static float GetSnapValue() {
-            float snapValue = 0.0f;
+            float snapValue;
 
             if (ProGridsUtil.SnapValue(out float proGridsSnapValue)) {
                 snapValue = proGridsSnapValue;

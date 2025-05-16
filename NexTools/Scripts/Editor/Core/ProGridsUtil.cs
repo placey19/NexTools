@@ -1,8 +1,8 @@
 ﻿using System;
 
-using static Nexcide.ReflectionUtil;
+using static Nexcide.NexTools.ReflectionUtil;
 
-namespace Nexcide {
+namespace Nexcide.NexTools {
 
     public static class ProGridsUtil {
 
@@ -34,9 +34,7 @@ namespace Nexcide {
             bool isActive = false;
 
             if (_proGridsEditor != null) {
-                if (_proGridsActive == null) {
-                    _proGridsActive = _proGridsEditor.CreateDelegate<Func<bool>>("SceneToolbarActive");
-                }
+                _proGridsActive ??= _proGridsEditor.CreateDelegate<Func<bool>>("SceneToolbarActive");
 
                 if (_proGridsActive != null) {
                     return _proGridsActive();
@@ -50,9 +48,7 @@ namespace Nexcide {
             bool snapEnabled = false;
 
             if (IsActive()) {
-                if (_proGridsSnapEnabled == null) {
-                    _proGridsSnapEnabled = _proGridsEditor.CreateDelegate<Func<bool>>("SnapEnabled");
-                }
+                _proGridsSnapEnabled ??= _proGridsEditor.CreateDelegate<Func<bool>>("SnapEnabled");
 
                 if (_proGridsSnapEnabled != null) {
                     snapEnabled = _proGridsSnapEnabled();
@@ -67,9 +63,7 @@ namespace Nexcide {
             snapValue = 0.0f;
 
             if (SnapEnabled()) {
-                if (_proGridsSnapValue == null) {
-                    _proGridsSnapValue = _proGridsEditor.CreateDelegate<Func<float>>("SnapValue");
-                }
+                _proGridsSnapValue ??= _proGridsEditor.CreateDelegate<Func<float>>("SnapValue");
 
                 if (_proGridsSnapValue != null) {
                     snapValue = _proGridsSnapValue();

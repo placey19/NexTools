@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using UnityEngine;
 
-namespace Nexcide {
+#pragma warning disable IDE1006     // Naming Styles
+
+namespace Nexcide.NexTools {
 
     public enum LogLevel {
 
@@ -179,3 +181,5 @@ namespace Nexcide {
         }
     }
 }
+
+#pragma warning restore IDE1006     // Naming Styles

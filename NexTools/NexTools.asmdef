@@ -1,6 +1,6 @@
 {
-    "name": "ProBuilderExt",
-    "rootNamespace": "Nexcide",
+    "name": "Nexcide.NexTools",
+    "rootNamespace": "Nexcide.NexTools",
     "references": [
         "GUID:1826c0224c0d048b88112c79bbb0cd85",
         "GUID:03ca3ee4acaf74592bc6d299ca86aa27"
@@ -10,7 +10,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": true,
+    "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
