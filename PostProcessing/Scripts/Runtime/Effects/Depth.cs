@@ -7,11 +7,11 @@ namespace Nexcide.PostProcessing {
     [Serializable, VolumeComponentMenu("Nexcide/Depth")]
     public class Depth : VolumeComponentBase {
 
-        public FloatParameter Blend = new ClampedFloatParameter(0.0f, 0.0f, 1.0f, false);
-        public NoInterpColorParameter NearColor = new NoInterpColorParameter(Color.blue, false);
-        public NoInterpColorParameter FarColor = new NoInterpColorParameter(Color.black, false);
-        public NoInterpClampedFloatParameter Min = new NoInterpClampedFloatParameter(5.0f, 0.0f, 1000.0f, false);
-        public NoInterpClampedFloatParameter Max = new NoInterpClampedFloatParameter(50.0f, 0.0f, 1000.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
+        public NoInterpColorParameter NearColor = new(Color.blue, false);
+        public NoInterpColorParameter FarColor = new(Color.black, false);
+        public NoInterpClampedFloatParameter Min = new(5.0f, 0.0f, 1000.0f, false);
+        public NoInterpClampedFloatParameter Max = new(50.0f, 0.0f, 1000.0f, false);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }
@@ -21,11 +21,11 @@ namespace Nexcide.PostProcessing {
 
         public override string ShaderName => "Nexcide/Depth";
 
-        private readonly int _blend = Shader.PropertyToID("_Blend");
-        private readonly int _nearColor = Shader.PropertyToID("_NearColor");
-        private readonly int _farColor = Shader.PropertyToID("_FarColor");
-        private readonly int _min = Shader.PropertyToID("_Min");
-        private readonly int _max = Shader.PropertyToID("_Max");
+        private static readonly int _blend = Shader.PropertyToID("_Blend");
+        private static readonly int _nearColor = Shader.PropertyToID("_NearColor");
+        private static readonly int _farColor = Shader.PropertyToID("_FarColor");
+        private static readonly int _min = Shader.PropertyToID("_Min");
+        private static readonly int _max = Shader.PropertyToID("_Max");
 
         public override bool ConfigureMaterial(VolumeStack volumeStack, out Material material) {
             bool active = ComponentActive(volumeStack, out Depth component, out material);

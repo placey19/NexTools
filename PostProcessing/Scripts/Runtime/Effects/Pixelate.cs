@@ -7,8 +7,8 @@ namespace Nexcide.PostProcessing {
     [Serializable, VolumeComponentMenu("Nexcide/Pixelate")]
     public class Pixelate : VolumeComponentBase {
 
-        public FloatParameter PixelSize = new ClampedFloatParameter(0.0f, 0.0f, 100.0f, false);
-        public ColorParameter Tint = new ColorParameter(Color.white, false);
+        public ClampedFloatParameter PixelSize = new(0.0f, 0.0f, 100.0f, false);
+        public ColorParameter Tint = new(Color.white, false);
 
         public override bool IsActive() => (PixelSize.value > 0.0f);
     }
@@ -18,8 +18,8 @@ namespace Nexcide.PostProcessing {
 
         public override string ShaderName => "Nexcide/Pixelate";
 
-        private readonly int _pixelSize = Shader.PropertyToID("_PixelSize");
-        private readonly int _tint = Shader.PropertyToID("_Tint");
+        private static readonly int _pixelSize = Shader.PropertyToID("_PixelSize");
+        private static readonly int _tint = Shader.PropertyToID("_Tint");
 
         public override bool ConfigureMaterial(VolumeStack volumeStack, out Material material) {
             bool active = ComponentActive(volumeStack, out Pixelate component, out material);

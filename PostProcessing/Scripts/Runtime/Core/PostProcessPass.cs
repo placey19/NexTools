@@ -7,7 +7,7 @@ namespace Nexcide.PostProcessing {
 
     public class PostProcessPass : ScriptableRenderPass {
 
-        private VolumeEffect _effect;
+        private readonly VolumeEffect _effect;
         private RTHandle _colorCopy;        // The handle to the temporary color copy texture (only used in the non-render graph path)
 
         private static readonly int _blitTexture = Shader.PropertyToID("_BlitTexture");

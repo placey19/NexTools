@@ -7,12 +7,12 @@ namespace Nexcide.PostProcessing {
     [Serializable, VolumeComponentMenu("Nexcide/Pixelate Depth")]
     public class PixelateDepth : VolumeComponentBase {
 
-        public FloatParameter Blend = new ClampedFloatParameter(0.0f, 0.0f, 1.0f, false);
-        public NoInterpFloatParameter PixelSizeNear = new NoInterpFloatParameter(2.0f, false);
-        public NoInterpFloatParameter PixelSizeFar = new NoInterpFloatParameter(50.0f, false);
-        public NoInterpFloatParameter MaxDistance = new NoInterpFloatParameter(100.0f, false);
-        public NoInterpFloatParameter DepthStep = new NoInterpFloatParameter(1.0f, false);
-        
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
+        public NoInterpFloatParameter PixelSizeNear = new(2.0f, false);
+        public NoInterpFloatParameter PixelSizeFar = new(50.0f, false);
+        public NoInterpFloatParameter MaxDistance = new(100.0f, false);
+        public NoInterpFloatParameter DepthStep = new(1.0f, false);
+
         public override bool IsActive() => (Blend.value > 0.0f);
     }
 
@@ -21,11 +21,11 @@ namespace Nexcide.PostProcessing {
 
         public override string ShaderName => "Nexcide/Pixelate Depth";
 
-        private readonly int _blend = Shader.PropertyToID("_Blend");
-        private readonly int _pixelSizeNear = Shader.PropertyToID("_PixelSizeNear");
-        private readonly int _pixelSizeFar = Shader.PropertyToID("_PixelSizeFar");
-        private readonly int _maxDistance = Shader.PropertyToID("_MaxDistance");
-        private readonly int _depthStep = Shader.PropertyToID("_DepthStep");
+        private static readonly int _blend = Shader.PropertyToID("_Blend");
+        private static readonly int _pixelSizeNear = Shader.PropertyToID("_PixelSizeNear");
+        private static readonly int _pixelSizeFar = Shader.PropertyToID("_PixelSizeFar");
+        private static readonly int _maxDistance = Shader.PropertyToID("_MaxDistance");
+        private static readonly int _depthStep = Shader.PropertyToID("_DepthStep");
 
         public override bool ConfigureMaterial(VolumeStack volumeStack, out Material material) {
             bool active = ComponentActive(volumeStack, out PixelateDepth component, out material);

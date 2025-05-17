@@ -7,9 +7,9 @@ namespace Nexcide.PostProcessing {
     [Serializable, VolumeComponentMenu("Nexcide/Monochrome")]
     public class Monochrome : VolumeComponentBase {
     
-        public FloatParameter Blend = new ClampedFloatParameter(0.0f, 0.0f, 1.0f, false);
-        public BoolParameter InvertColors = new BoolParameter(false, false);
-        public NoInterpClampedFloatParameter Edge = new NoInterpClampedFloatParameter(0.65f, 0.0f, 1.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
+        public BoolParameter InvertColors = new(false, false);
+        public NoInterpClampedFloatParameter Edge = new(0.65f, 0.0f, 1.0f, false);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }
@@ -19,9 +19,9 @@ namespace Nexcide.PostProcessing {
 
         public override string ShaderName => "Nexcide/Monochrome";
 
-        private readonly int _blend = Shader.PropertyToID("_Blend");
-        private readonly int _invertColors = Shader.PropertyToID("_InvertColors");
-        private readonly int _edge = Shader.PropertyToID("_Edge");
+        private static readonly int _blend = Shader.PropertyToID("_Blend");
+        private static readonly int _invertColors = Shader.PropertyToID("_InvertColors");
+        private static readonly int _edge = Shader.PropertyToID("_Edge");
 
         public override bool ConfigureMaterial(VolumeStack volumeStack, out Material material) {
             bool active = ComponentActive(volumeStack, out Monochrome component, out material);
