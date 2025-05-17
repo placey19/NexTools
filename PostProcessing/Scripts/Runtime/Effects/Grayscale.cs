@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -7,9 +6,9 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Grayscale")]
     public class Grayscale : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public ClampedFloatParameter Exposure = new(1.0f, 0.0f, 10.0f, false);
-        public BoolParameter Invert = new(false, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public ClampedFloatParameter Exposure = new(1.0f, 0.0f, 10.0f);
+        public BoolParameter Invert = new(false);
 
         public override bool IsActive() => (Blend.value > 0.0f || Exposure != 1.0f);
     }

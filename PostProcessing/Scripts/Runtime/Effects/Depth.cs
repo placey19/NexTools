@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,11 +6,11 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Depth")]
     public class Depth : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpColorParameter NearColor = new(Color.blue, false);
-        public NoInterpColorParameter FarColor = new(Color.black, false);
-        public NoInterpClampedFloatParameter Min = new(5.0f, 0.0f, 1000.0f, false);
-        public NoInterpClampedFloatParameter Max = new(50.0f, 0.0f, 1000.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public NoInterpColorParameter NearColor = new(Color.blue);
+        public NoInterpColorParameter FarColor = new(Color.black);
+        public NoInterpClampedFloatParameter Min = new(5.0f, 0.0f, 1000.0f);
+        public NoInterpClampedFloatParameter Max = new(50.0f, 0.0f, 1000.0f);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,12 +6,12 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/RGB Lines")]
     public class RGBLines : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public ClampedFloatParameter Exposure = new(1.0f, 0.0f, 10.0f, false);
-        public Vector2Parameter Offset = new(new Vector2(0.0f, 0.0f), false);
-        public Vector2Parameter RGBSplit = new(new Vector2(0.005f, 0.005f), false);
-        public ClampedFloatParameter Blur = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpClampedFloatParameter Speed = new(0.02f, 0.0f, 1.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public ClampedFloatParameter Exposure = new(1.0f, 0.0f, 10.0f);
+        public Vector2Parameter Offset = new(new Vector2(0.0f, 0.0f));
+        public Vector2Parameter RGBSplit = new(new Vector2(0.005f, 0.005f));
+        public ClampedFloatParameter Blur = new(0.0f, 0.0f, 1.0f);
+        public NoInterpClampedFloatParameter Speed = new(0.02f, 0.0f, 1.0f);
 
         public override bool IsActive() => (Blend.value > 0.0f || Exposure != 1.0f);
     }

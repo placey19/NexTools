@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,7 +6,7 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Color Filter")]
     public class ColorFilter : VolumeComponentBase {
 
-        public ColorParameter Color = new ColorParameter(UnityEngine.Color.white, hdr: true, showAlpha: false, showEyeDropper: false, false);
+        public ColorParameter Color = new(UnityEngine.Color.white, hdr: true, showAlpha: false, showEyeDropper: false);
 
         public override bool IsActive() => (Color.value != UnityEngine.Color.white);
     }
@@ -17,7 +16,7 @@ namespace Nexcide.PostProcessing {
 
         public override string ShaderName => "Nexcide/Color Filter";
 
-        private readonly int _color = Shader.PropertyToID("_Color");
+        private static readonly int _color = Shader.PropertyToID("_Color");
 
         public override bool ConfigureMaterial(VolumeStack volumeStack, out Material material) {
             bool active = ComponentActive(volumeStack, out ColorFilter component, out material);

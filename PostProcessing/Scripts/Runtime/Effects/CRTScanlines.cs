@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,9 +6,9 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/CRT Scanlines")]
     public class CRTScanlines : VolumeComponentBase {
 
-        public ClampedFloatParameter Opacity = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpFloatParameter Scale = new(1.0f, false);
-        public ClampedFloatParameter ColorBleed = new(0.0f, 0.0f, 5.0f, false);
+        public ClampedFloatParameter Opacity = new(0.0f, 0.0f, 1.0f);
+        public NoInterpFloatParameter Scale = new(1.0f);
+        public ClampedFloatParameter ColorBleed = new(0.0f, 0.0f, 5.0f);
 
         public override bool IsActive() => (Opacity.value > 0.0f);
     }

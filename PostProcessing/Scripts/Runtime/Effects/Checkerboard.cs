@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -7,11 +6,11 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Checkerboard")]
     public class Checkerboard : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpFloatParameter Size = new(25.0f, false);
-        public ColorParameter Color1 = new(Color.black, false);
-        public ColorParameter Color2 = new(Color.white, false);
-        public NoInterpVector2Parameter Offset = new(Vector2.zero, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public NoInterpFloatParameter Size = new(25.0f);
+        public ColorParameter Color1 = new(Color.black);
+        public ColorParameter Color2 = new(Color.white);
+        public NoInterpVector2Parameter Offset = new(Vector2.zero);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }

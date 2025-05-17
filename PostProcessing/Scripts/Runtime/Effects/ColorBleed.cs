@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,7 +6,7 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Color Bleed")]
     public class ColorBleed : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
         public NoInterpClampedFloatParameter Iterations = new(10.0f, 0.0f, 20.0f);
         public NoInterpClampedFloatParameter MinAmount = new(1.2f, -20.0f, 20.0f);
         public NoInterpClampedFloatParameter MaxAmount = new(1.2f, -20.0f, 20.0f);

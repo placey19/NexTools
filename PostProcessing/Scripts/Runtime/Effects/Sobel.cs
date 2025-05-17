@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,8 +6,8 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Sobel")]
     public class Sobel : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public BoolParameter Clamp01 = new(false, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public BoolParameter Clamp01 = new(false);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }

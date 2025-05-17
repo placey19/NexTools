@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,10 +6,10 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Fullscreen Outlines")]
     public class FullscreenOutlines : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpColorParameter OutlineColor = new(Color.black, false);
-        public NoInterpClampedFloatParameter ColorThreshold = new(0.1f, 0.1f, 10.0f, false);
-        public NoInterpClampedFloatParameter NormalThreshold = new(0.5f, 0.001f, 10.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public ColorParameter OutlineColor = new(Color.black);
+        public NoInterpClampedFloatParameter ColorThreshold = new(0.1f, 0.1f, 10.0f);
+        public NoInterpClampedFloatParameter NormalThreshold = new(0.5f, 0.001f, 10.0f);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }

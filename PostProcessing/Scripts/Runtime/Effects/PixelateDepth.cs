@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,11 +6,11 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Pixelate Depth")]
     public class PixelateDepth : VolumeComponentBase {
 
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpFloatParameter PixelSizeNear = new(2.0f, false);
-        public NoInterpFloatParameter PixelSizeFar = new(50.0f, false);
-        public NoInterpFloatParameter MaxDistance = new(100.0f, false);
-        public NoInterpFloatParameter DepthStep = new(1.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public NoInterpFloatParameter PixelSizeNear = new(2.0f);
+        public NoInterpFloatParameter PixelSizeFar = new(50.0f);
+        public NoInterpFloatParameter MaxDistance = new(100.0f);
+        public NoInterpFloatParameter DepthStep = new(1.0f);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }

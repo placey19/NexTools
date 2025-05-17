@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -7,9 +6,9 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Monochrome")]
     public class Monochrome : VolumeComponentBase {
     
-        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
-        public BoolParameter InvertColors = new(false, false);
-        public NoInterpClampedFloatParameter Edge = new(0.65f, 0.0f, 1.0f, false);
+        public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
+        public BoolParameter InvertColors = new(false);
+        public NoInterpClampedFloatParameter Edge = new(0.65f, 0.0f, 1.0f);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }

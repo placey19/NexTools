@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,8 +6,8 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Color Fade")]
     public class ColorFade : VolumeComponentBase {
 
-        public ClampedFloatParameter Amount = new(0.0f, 0.0f, 1.0f, false);
-        public ColorParameter Color = new(UnityEngine.Color.white, hdr: true, showAlpha: false, showEyeDropper: false, false);
+        public ClampedFloatParameter Amount = new(0.0f, 0.0f, 1.0f);
+        public ColorParameter Color = new(UnityEngine.Color.white, hdr: true, showAlpha: false, showEyeDropper: false);
 
         public override bool IsActive() => (Amount.value > 0.0f);
     }

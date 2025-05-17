@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,11 +6,11 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Rectangle")]
     public class Rectangle : VolumeComponentBase {
 
-        public ClampedFloatParameter Opacity = new(0.0f, 0.0f, 1.0f, false);
-        public NoInterpFloatParameter AspectRatio = new(1.77777f, false);
-        public NoInterpClampedFloatParameter Width = new(0.5f, 0.0f, 1.0f, false);
-        public NoInterpClampedFloatParameter Height = new(0.5f, 0.0f, 1.0f, false);
-        public NoInterpClampedFloatParameter EdgeRadius = new(0.1f, 0.0f, 1.0f, false);
+        public ClampedFloatParameter Opacity = new(0.0f, 0.0f, 1.0f);
+        public NoInterpFloatParameter AspectRatio = new(1.77777f);
+        public NoInterpClampedFloatParameter Width = new(0.5f, 0.0f, 1.0f);
+        public NoInterpClampedFloatParameter Height = new(0.5f, 0.0f, 1.0f);
+        public NoInterpClampedFloatParameter EdgeRadius = new(0.1f, 0.0f, 1.0f);
 
         public override bool IsActive() => (Opacity.value > 0.0f);
     }

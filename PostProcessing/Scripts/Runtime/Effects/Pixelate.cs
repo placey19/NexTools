@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
@@ -7,8 +6,8 @@ namespace Nexcide.PostProcessing {
     [VolumeComponentMenu("Nexcide/Pixelate")]
     public class Pixelate : VolumeComponentBase {
 
-        public ClampedFloatParameter PixelSize = new(0.0f, 0.0f, 100.0f, false);
-        public ColorParameter Tint = new(Color.white, false);
+        public ClampedFloatParameter PixelSize = new(0.0f, 0.0f, 100.0f);
+        public ColorParameter Tint = new(Color.white);
 
         public override bool IsActive() => (PixelSize.value > 0.0f);
     }
