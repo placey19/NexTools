@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Rectangle")]
+    [VolumeComponentMenu("Nexcide/Rectangle")]
     public class Rectangle : VolumeComponentBase {
 
         public ClampedFloatParameter Opacity = new(0.0f, 0.0f, 1.0f, false);

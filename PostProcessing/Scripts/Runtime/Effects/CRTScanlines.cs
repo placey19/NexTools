@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/CRT Scanlines")]
+    [VolumeComponentMenu("Nexcide/CRT Scanlines")]
     public class CRTScanlines : VolumeComponentBase {
 
         public ClampedFloatParameter Opacity = new(0.0f, 0.0f, 1.0f, false);

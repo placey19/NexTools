@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Color Fade")]
+    [VolumeComponentMenu("Nexcide/Color Fade")]
     public class ColorFade : VolumeComponentBase {
 
         public ClampedFloatParameter Amount = new(0.0f, 0.0f, 1.0f, false);

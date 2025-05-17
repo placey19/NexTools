@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Static Noise")]
+    [VolumeComponentMenu("Nexcide/Static Noise")]
     public class StaticNoise : VolumeComponentBase {
 
         public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);

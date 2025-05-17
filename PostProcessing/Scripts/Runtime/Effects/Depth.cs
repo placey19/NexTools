@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Depth")]
+    [VolumeComponentMenu("Nexcide/Depth")]
     public class Depth : VolumeComponentBase {
 
         public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);

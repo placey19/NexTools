@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Pixelate")]
+    [VolumeComponentMenu("Nexcide/Pixelate")]
     public class Pixelate : VolumeComponentBase {
 
         public ClampedFloatParameter PixelSize = new(0.0f, 0.0f, 100.0f, false);

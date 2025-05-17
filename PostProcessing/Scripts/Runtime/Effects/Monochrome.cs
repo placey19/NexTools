@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Monochrome")]
+    [VolumeComponentMenu("Nexcide/Monochrome")]
     public class Monochrome : VolumeComponentBase {
     
         public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);

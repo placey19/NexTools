@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Color Filter")]
+    [VolumeComponentMenu("Nexcide/Color Filter")]
     public class ColorFilter : VolumeComponentBase {
 
         public ColorParameter Color = new ColorParameter(UnityEngine.Color.white, hdr: true, showAlpha: false, showEyeDropper: false, false);

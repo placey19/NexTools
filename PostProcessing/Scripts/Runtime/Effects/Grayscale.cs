@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 namespace Nexcide.PostProcessing {
 
-    [Serializable, VolumeComponentMenu("Nexcide/Grayscale")]
+    [VolumeComponentMenu("Nexcide/Grayscale")]
     public class Grayscale : VolumeComponentBase {
 
         public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f, false);
