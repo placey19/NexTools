@@ -7,9 +7,10 @@ namespace Nexcide.PostProcessing {
     public class FullscreenOutlines : VolumeComponentBase {
 
         public ClampedFloatParameter Blend = new(0.0f, 0.0f, 1.0f);
-        public ColorParameter OutlineColor = new(Color.black);
+        public ColorParameter OutlineColor = new(Color.black, hdr: true, showAlpha: false, showEyeDropper: false);
         public NoInterpClampedFloatParameter ColorThreshold = new(0.1f, 0.1f, 10.0f);
         public NoInterpClampedFloatParameter NormalThreshold = new(0.5f, 0.001f, 10.0f);
+        public NoInterpFloatParameter LineThickness = new(0.001f);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }
@@ -23,6 +24,7 @@ namespace Nexcide.PostProcessing {
         private static readonly int _outlineColor = Shader.PropertyToID("_OutlineColor");
         private static readonly int _colorThreshold = Shader.PropertyToID("_ColorThreshold");
         private static readonly int _normalThreshold = Shader.PropertyToID("_NormalThreshold");
+        private static readonly int _lineThickness = Shader.PropertyToID("_LineThickness");
 
         public override bool ConfigureMaterial(VolumeStack volumeStack, out Material material) {
             bool active = ComponentActive(volumeStack, out FullscreenOutlines component, out material);
@@ -32,6 +34,7 @@ namespace Nexcide.PostProcessing {
                 material.SetColor(_outlineColor, component.OutlineColor.value);
                 material.SetFloat(_colorThreshold, component.ColorThreshold.value);
                 material.SetFloat(_normalThreshold, component.NormalThreshold.value);
+                material.SetFloat(_lineThickness, component.LineThickness.value);
             }
 
             return active;
