@@ -2,7 +2,9 @@
     "name": "Nexcide.EasyMaterials",
     "rootNamespace": "Nexcide.EasyMaterials",
     "references": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
