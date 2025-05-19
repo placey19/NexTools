@@ -10,7 +10,7 @@ namespace Nexcide.PostProcessing {
         public ColorParameter OutlineColor = new(Color.black, hdr: true, showAlpha: false, showEyeDropper: false);
         public NoInterpClampedFloatParameter ColorThreshold = new(0.1f, 0.1f, 10.0f);
         public NoInterpClampedFloatParameter NormalThreshold = new(0.5f, 0.001f, 10.0f);
-        public NoInterpFloatParameter LineThickness = new(0.001f);
+        public NoInterpFloatParameter LineThickness = new(1.0f);
 
         public override bool IsActive() => (Blend.value > 0.0f);
     }
@@ -34,7 +34,7 @@ namespace Nexcide.PostProcessing {
                 material.SetColor(_outlineColor, component.OutlineColor.value);
                 material.SetFloat(_colorThreshold, component.ColorThreshold.value);
                 material.SetFloat(_normalThreshold, component.NormalThreshold.value);
-                material.SetFloat(_lineThickness, component.LineThickness.value);
+                material.SetFloat(_lineThickness, component.LineThickness.value * 0.001f);
             }
 
             return active;
