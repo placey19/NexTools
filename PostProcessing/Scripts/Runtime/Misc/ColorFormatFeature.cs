@@ -16,9 +16,11 @@ public class ColorFormatFeature : ScriptableRendererFeature {
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData) {
-        if (renderingData.cameraData.isSceneViewCamera && !EnableInSceneView) {
+#if UNITY_EDITOR
+        if (!EnableInSceneView && renderingData.cameraData.isSceneViewCamera) {
             return;
         }
+#endif
 
         renderer.EnqueuePass(_pass);
     }
