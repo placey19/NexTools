@@ -106,32 +106,5 @@ namespace Nexcide.EasyMaterials {
                 return text;
             }
         }
-
-        /// <summary>
-        /// Get words from non-public static GUIContent fields in the given class type, because
-        /// SettingsProvider.GetSearchKeywordsFromGUIContentProperties() wouldn't do what I wanted.
-        /// </summary>
-        public static IEnumerable<string> GetWords(System.Type type) {
-            GUIContent[] contents = type.GetFields(BindingFlags.Static | BindingFlags.NonPublic)
-              .Where(f => f.FieldType == typeof(GUIContent))
-              .Select(f => f.GetValue(null))
-              .Cast<GUIContent>()
-              .ToArray();
-
-            return GetWords(contents);
-        }
-
-        /// <summary>
-        /// Get words from the given GUIContent.text fields.
-        /// </summary>
-        public static IEnumerable<string> GetWords(params GUIContent[] contents) {
-            List<string> words = new List<string>();
-
-            foreach (GUIContent content in contents) {
-                words.AddRange(content.text.Split(' '));
-            }
-
-            return words;
-        }
     }
 }

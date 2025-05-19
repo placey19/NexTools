@@ -10,18 +10,18 @@ namespace Nexcide.EasyMaterials {
 
         private const string _groupTooltip = "Colors that are cycled through when selecting scene objects";
 
-        public static GUIContent IncludeChildObjects = new GUIContent("Include immediate child objects", "Include materials from first-level child objects of selected GameObject");
-        public static GUIContent MaterialNameUnderIcon = new GUIContent("Show material name under icon", "Include the name of the material on the button below the icon");
-        public static GUIContent ShowMaterialCount = new GUIContent("Show material count in status bar", "Show the number of materials in the list at the bottom left of the status bar");
-        public static GUIContent MaximumRecentMaterials = new GUIContent("Maximum recent materials length", "The total allowed amount of recently selected materials (Ignored when loading a list)");
-        public static GUIContent IconSize = new GUIContent("Icon size", "The size of the material icon button");
-        public static GUIContent MaterialGroup1Tint = new GUIContent("Material group 1 tint", _groupTooltip);
-        public static GUIContent MaterialGroup2Tint = new GUIContent("Material group 2 tint", _groupTooltip);
-        public static GUIContent MaterialGroup3Tint = new GUIContent("Material group 3 tint", _groupTooltip);
-        public static GUIContent AssetMaterialTint = new GUIContent("Asset material tint", "The tint used on materials selected in the project window");
-        public static GUIContent SelectedTint = new GUIContent("Selected material tint", "Color used when material has been used");
-        public static GUIContent ErrorTint = new GUIContent("Material error tint", "Used when a material is deleted");
-        public static GUIContent DebugLogging = new GUIContent("Enable debug logging", "Extra console logging that you don't want to see unless you're debugging the tool");
+        public static GUIContent IncludeChildObjects = new("Include immediate child objects", "Include materials from first-level child objects of selected GameObject");
+        public static GUIContent MaterialNameUnderIcon = new("Show material name under icon", "Include the name of the material on the button below the icon");
+        public static GUIContent ShowMaterialCount = new("Show material count in status bar", "Show the number of materials in the list at the bottom left of the status bar");
+        public static GUIContent MaximumRecentMaterials = new("Maximum recent materials length", "The total allowed amount of recently selected materials (Ignored when loading a list)");
+        public static GUIContent IconSize = new("Icon size", "The size of the material icon button");
+        public static GUIContent MaterialGroup1Tint = new("Material group 1 tint", _groupTooltip);
+        public static GUIContent MaterialGroup2Tint = new("Material group 2 tint", _groupTooltip);
+        public static GUIContent MaterialGroup3Tint = new("Material group 3 tint", _groupTooltip);
+        public static GUIContent AssetMaterialTint = new("Asset material tint", "The tint used on materials selected in the project window");
+        public static GUIContent SelectedTint = new("Selected material tint", "Color used when material has been used");
+        public static GUIContent ErrorTint = new("Material error tint", "Used when a material is deleted");
+        public static GUIContent DebugLogging = new("Enable debug logging", "Extra console logging that you don't want to see unless you're debugging the tool");
     }
 
     class EasyMaterialSettings : ScriptableObject {
@@ -290,7 +290,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         public EasyMaterialSettingsProvider() : base("Preferences/Easy Materials", SettingsScope.User) {
-            keywords = GetWords(typeof(SettingsContent));
+            keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>();
         }
 
         public override void OnActivate(string searchContext, VisualElement rootElement) {
