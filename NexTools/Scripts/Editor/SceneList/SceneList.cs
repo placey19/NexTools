@@ -94,17 +94,29 @@ namespace Nexcide.NexTools {
                     foreach (SceneData sceneData in _sceneDataList) {
                         if (SceneListSettings.ShowFolderLabels()) {
                             if (sceneData.SearchFolder != searchFolder) {
-                                GUILayout.Space(8.0f);
                                 searchFolder = sceneData.SearchFolder;
-
-                                string folderLabel = (searchFolder.StartsWith(AssetsRoot) ? searchFolder[AssetsRoot.Length..] : searchFolder);
-                                GUILayout.Label(folderLabel, _labelStyle);
+                                AddLabel(sceneData);
                             }
                         }
 
                         AddButton(in sceneData);
                     }
                 }
+            }
+        }
+
+        private void AddLabel(in SceneData sceneData) {
+            GUILayout.Space(8.0f);
+
+            // get folder without it starting with "Assets/"
+            string folder = sceneData.SearchFolder;
+            string label = (folder.StartsWith(AssetsRoot) ? folder[AssetsRoot.Length..] : folder);
+
+            // label is actually a button, when clicked, highlight the path in the Project window
+            if (GUILayout.Button(label, _labelStyle)) {
+                Object obj = AssetDatabase.LoadAssetAtPath<Object>(sceneData.AssetPath);
+                Selection.activeObject = obj;
+                EditorGUIUtility.PingObject(obj);
             }
         }
 
@@ -123,8 +135,10 @@ namespace Nexcide.NexTools {
                         }
                     }
                 } else if (e.button == 1) {
-                    // on right click, focus on scene asset in Project Window
-                    Selection.activeObject = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneData.AssetPath);
+                    // on right click, highlight on scene asset in Project window
+                    SceneAsset sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(sceneData.AssetPath);
+                    Selection.activeObject = sceneAsset;
+                    EditorGUIUtility.PingObject(sceneAsset);
                 }
             }
         }
