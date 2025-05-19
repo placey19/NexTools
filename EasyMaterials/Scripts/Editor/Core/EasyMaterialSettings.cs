@@ -1,6 +1,5 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 using static Nexcide.EasyMaterials.EasyMaterialUtil;
 
@@ -160,6 +159,7 @@ namespace Nexcide.EasyMaterials {
             _selectedTint = EditorPrefsGetColor(KeySelectedTint, DefaultSelectedTint);
             _errorTint = EditorPrefsGetColor(KeyErrorTint, DefaultErrorTint);
             _debugLogging = EditorPrefs.GetBool(KeyDebugLogging, DefaultDebugLogging);
+            Log.DebugLogging = _debugLogging;
 
             UpdateMaterialGroupTintsArray();
         }
@@ -177,6 +177,7 @@ namespace Nexcide.EasyMaterials {
             EditorPrefsSetColor(KeySelectedTint, _selectedTint);
             EditorPrefsSetColor(KeyErrorTint, _errorTint);
             EditorPrefs.SetBool(KeyDebugLogging, _debugLogging);
+            Log.DebugLogging = _debugLogging;
 
             UpdateMaterialGroupTintsArray();
         }
@@ -194,15 +195,13 @@ namespace Nexcide.EasyMaterials {
             obj.FindProperty(nameof(_selectedTint)).colorValue = DefaultSelectedTint;
             obj.FindProperty(nameof(_errorTint)).colorValue = DefaultErrorTint;
             obj.FindProperty(nameof(_debugLogging)).boolValue = DefaultDebugLogging;
+            Log.DebugLogging = DefaultDebugLogging;
 
             _settings.UpdateMaterialGroupTintsArray();
         }
 
         private void UpdateMaterialGroupTintsArray() {
-            if (_materialGroupTints == null) {
-                _materialGroupTints = new Color[3];
-            }
-
+            _materialGroupTints ??= new Color[3];
             _materialGroupTints[0] = _materialGroup1Tint;
             _materialGroupTints[1] = _materialGroup2Tint;
             _materialGroupTints[2] = _materialGroup3Tint;
@@ -271,40 +270,6 @@ namespace Nexcide.EasyMaterials {
                 EditorGUILayout.PropertyField(obj.FindProperty(propertyName), label);
                 GUILayout.FlexibleSpace();
             }
-        }
-    }
-
-    class EasyMaterialSettingsProvider : SettingsProvider {
-
-        private static EasyMaterialSettingsProvider _instance;
-
-        [SettingsProvider]
-        public static SettingsProvider Create() {
-            return new EasyMaterialSettingsProvider();
-        }
-
-        public static void RepaintIfActive() {
-            if (_instance != null) {
-                _instance.Repaint();
-            }
-        }
-
-        public EasyMaterialSettingsProvider() : base("Preferences/Easy Materials", SettingsScope.User) {
-            keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>();
-        }
-
-        public override void OnActivate(string searchContext, VisualElement rootElement) {
-            _instance = this;
-            Undo.undoRedoPerformed += EasyMaterialSettings.UndoRedoPerformed;
-        }
-
-        public override void OnDeactivate() {
-            _instance = null;
-            Undo.undoRedoPerformed -= EasyMaterialSettings.UndoRedoPerformed;
-        }
-
-        public override void OnGUI(string searchContext) {
-            EasyMaterialSettings.OnGUI();
         }
     }
 }
