@@ -5,28 +5,31 @@ using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
 
-class ColorFormatPass : ScriptableRenderPass {
+namespace Nexcide.PostProcessing {
 
-    private readonly GraphicsFormat _colorFormat;
+    class ColorFormatPass : ScriptableRenderPass {
 
-    public ColorFormatPass(GraphicsFormat colorFormat) {
-        _colorFormat = colorFormat;
-    }
+        private readonly GraphicsFormat _colorFormat;
 
-    public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData) {
-        UniversalResourceData resourcesData = frameData.Get<UniversalResourceData>();
+        public ColorFormatPass(GraphicsFormat colorFormat) {
+            _colorFormat = colorFormat;
+        }
 
-        TextureDesc destinationDesc = renderGraph.GetTextureDesc(resourcesData.cameraColor);
-        destinationDesc.name = "_CameraColorCopy";
-        destinationDesc.clearBuffer = false;
-        destinationDesc.colorFormat = _colorFormat;
+        public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData) {
+            UniversalResourceData resourcesData = frameData.Get<UniversalResourceData>();
 
-        TextureHandle source = resourcesData.cameraColor;
-        TextureHandle destination = renderGraph.CreateTexture(destinationDesc);
+            TextureDesc destinationDesc = renderGraph.GetTextureDesc(resourcesData.cameraColor);
+            destinationDesc.name = "_CameraColorCopy";
+            destinationDesc.clearBuffer = false;
+            destinationDesc.colorFormat = _colorFormat;
 
-        renderGraph.AddBlitPass(source, destination, scale: Vector2.one, offset: Vector2.zero);
+            TextureHandle source = resourcesData.cameraColor;
+            TextureHandle destination = renderGraph.CreateTexture(destinationDesc);
 
-        // set camera target to new texture
-        resourcesData.cameraColor = destination;
+            renderGraph.AddBlitPass(source, destination, scale: Vector2.one, offset: Vector2.zero);
+
+            // set camera target to new texture
+            resourcesData.cameraColor = destination;
+        }
     }
 }
