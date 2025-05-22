@@ -1,0 +1,16 @@
+{
+    "name": "Nexcide.TileKing",
+    "rootNamespace": "Nexcide.TileKing",
+    "references": [
+        "GUID:61bb9281e2182dd4eaa1b366592839b9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

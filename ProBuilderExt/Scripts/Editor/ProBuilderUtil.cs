@@ -4,7 +4,7 @@ using UnityEditor.ProBuilder;
 using UnityEngine;
 using UnityEngine.ProBuilder;
 
-using static Nexcide.ProBuilder.ReflectionUtil;
+using static Nexcide.ReflectionUtil;
 
 namespace Nexcide.ProBuilder {
 

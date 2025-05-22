@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Nexcide.ProBuilder {
+namespace Nexcide {
 
     /// <summary>
     /// Snapping utility that prioritizes ProGrids over EditorSnapSettings.

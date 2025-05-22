@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using UnityEngine;
 
-namespace Nexcide.ProBuilder {
+namespace Nexcide {
 
     public static class ReflectionUtil {
 
@@ -37,7 +36,7 @@ namespace Nexcide.ProBuilder {
             if (methodInfo != null) {
                 return (T)Delegate.CreateDelegate(typeof(T), methodInfo);
             } else {
-                Debug.LogWarning($"Couldn't get method '{methodName}' from type: {type}");
+                Log.w($"Couldn't get method '{methodName}' from type: {type}");
             }
 
             return null;

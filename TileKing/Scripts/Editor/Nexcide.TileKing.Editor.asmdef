@@ -1,11 +1,10 @@
 {
-    "name": "Nexcide.ProBuilder.Editor",
-    "rootNamespace": "Nexcide.ProBuilder",
+    "name": "Nexcide.TileKing.Editor",
+    "rootNamespace": "Nexcide.TileKing",
     "references": [
         "GUID:61bb9281e2182dd4eaa1b366592839b9",
         "GUID:6b218f98faec7e848bc5e3a6e097aed3",
-        "GUID:1826c0224c0d048b88112c79bbb0cd85",
-        "GUID:03ca3ee4acaf74592bc6d299ca86aa27"
+        "GUID:b9db8b3792511da4fabb509f6c4ed19d"
     ],
     "includePlatforms": [
         "Editor"

@@ -1,8 +1,8 @@
 ﻿using System;
 
-using static Nexcide.ProBuilder.ReflectionUtil;
+using static Nexcide.ReflectionUtil;
 
-namespace Nexcide.ProBuilder {
+namespace Nexcide {
 
     public static class ProGridsUtil {
 
