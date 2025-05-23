@@ -8,28 +8,12 @@ namespace Nexcide.TileKing {
     [CustomEditor(typeof(TileKingMesh))]
     public class TileKingMeshEditor : Editor {
 
+        public LogLevel LogLevel => TileKingSettings.GetLogLevel();
+
         [MenuItem("GameObject/Nexcide/Tile King Mesh")]
         public static void CreateTileKingMesh() {
-            const string prefabFileName = "Default Tile King Mesh.prefab";
-            bool found = false;
-
-            string[] assetGuids = AssetDatabase.FindAssets("t:Prefab");
-            if (assetGuids.Length > 0) {
-                foreach (string guid in assetGuids) {
-                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-
-                    if (assetPath.EndsWith($"TileKing/Prefabs/{prefabFileName}")) {
-                        GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                        SpawnPrefab(prefabAsset, "Spawn Tile King Mesh", Vector3.zero, PrefabUnpack.OutermostRoot);
-                        found = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!found) {
-                Log.e($"Failed to find '{prefabFileName}' asset");
-            }
+            GameObject prefabAsset = TileKingSettings.GetPrefabAsset();
+            SpawnPrefab(prefabAsset, "Spawn Tile King Mesh", Vector3.zero, PrefabUnpack.OutermostRoot);
         }
 
         private string _materialProperty = "_Tiling";
@@ -140,7 +124,7 @@ namespace Nexcide.TileKing {
                     } else if (material.HasProperty(_materialProperty)) {
                         materialScale = material.GetVector(_materialProperty);
                     } else {
-                        Log.e("Material isn't default URP Lit, and doesn't have property: " + _materialProperty);
+                        Log.e(LogLevel, this, "Material isn't default URP Lit, and doesn't have property: " + _materialProperty);
                     }
                 }
 
@@ -324,8 +308,10 @@ namespace Nexcide.TileKing {
             // make sure a mesh instance is always available
             Mesh mesh = (Mesh)meshAssetProperty.objectReferenceValue;
             if (mesh == null) {
-                mesh = new Mesh();
-                mesh.name = " (Fresh Mesh)";
+                mesh = new Mesh {
+                    name = " (Fresh Mesh)"
+                };
+
                 meshAssetProperty.objectReferenceValue = mesh;
                 generate = true;
             }
@@ -335,7 +321,7 @@ namespace Nexcide.TileKing {
 
         private void GenerateMesh(TileKingMesh tileKingMesh) {
             if (tileKingMesh.MeshAsset != null && tileKingMesh.Canvas != null) {
-                TileKingMeshCreator creator = new TileKingMeshCreator();
+                TileKingMeshCreator creator = new();
                 creator.PopulateMesh(tileKingMesh);
 
                 EditorUtility.SetDirty(tileKingMesh.MeshAsset);
