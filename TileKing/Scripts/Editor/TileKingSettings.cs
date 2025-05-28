@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Nexcide.TileKing {
@@ -11,13 +13,9 @@ namespace Nexcide.TileKing {
 
     internal class TileKingSettings : ScriptableObject {
 
-        private const string KeyPrefix = "TileKing_";
-
         public const string AssetsRoot = "Assets/";
 
-        // settings keys
-        private const string KeyPrefabAssetPath = KeyPrefix + "PrefabAssetPath";
-        private const string KeyLogLevel = KeyPrefix + "LogLevel";
+        private const string SettingsAssetPath = "ProjectSettings/NexcideTileKing.asset";
 
         // defaults
         private const string DefaultPrefabFileName = "Default Tile King Mesh.prefab";
@@ -26,10 +24,6 @@ namespace Nexcide.TileKing {
         [SerializeField] private LogLevel _logLevel;
 
         private static TileKingSettings _settings;
-
-        public static void Initialize() {
-            GetSettings();
-        }
 
         public static GameObject GetPrefabAsset() {
             return GetSettings()._prefabAsset;
@@ -41,39 +35,33 @@ namespace Nexcide.TileKing {
 
         private static TileKingSettings GetSettings() {
             if (_settings == null) {
-                _settings = ScriptableObject.CreateInstance<TileKingSettings>();
-                _settings.Load();
+                Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(SettingsAssetPath);
+                _settings = (objs.Length > 0 ? objs[0] : null) as TileKingSettings;
+
+                if (_settings != null) {
+                    Log.d(_settings._logLevel, _settings, $"Loaded {nameof(TileKingSettings)}");
+                } else {
+                    _settings = CreateInstance<TileKingSettings>();
+                    _settings.name = nameof(TileKingSettings);
+                    SerializedObject obj = new(_settings);
+                    _settings.ResetToDefaults(obj);
+                    obj.ApplyModifiedProperties();
+                    _settings.Save();
+
+                    Log.i(_settings._logLevel, _settings, $"Created: {SettingsAssetPath}");
+                }
             }
 
             return _settings;
         }
 
-        private void Load() {
-            name = nameof(TileKingSettings);
-
-            _logLevel = (LogLevel)EditorPrefs.GetInt(KeyLogLevel, (int)LogLevel.Default);
-
-            string prefabAssetPath = EditorPrefs.GetString(KeyPrefabAssetPath, string.Empty);
-            if (prefabAssetPath != string.Empty) {
-                _prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(prefabAssetPath);
-            } else {
-                FindDefaultPrefabAsset(out _prefabAsset);
-            }
-
-            Log.d(_logLevel, this, "Loaded");
-        }
-
         private void Save() {
-            if (_prefabAsset != null) {
-                string prefabAssetPath = AssetDatabase.GetAssetPath(_prefabAsset);
-                EditorPrefs.SetString(KeyPrefabAssetPath, prefabAssetPath);
-            } else {
-                Log.e(_logLevel, this, "Prefab asset null during save");
+            string folderPath = Path.GetDirectoryName(SettingsAssetPath);
+            if (!Directory.Exists(folderPath)) {
+                Directory.CreateDirectory(folderPath);
             }
 
-            EditorPrefs.SetInt(KeyLogLevel, (int)_logLevel);
-
-            Log.d(_logLevel, this, "Saved");
+            InternalEditorUtility.SaveToSerializedFileAndForget(new[] { _settings }, SettingsAssetPath, allowTextSerialization: true);
         }
 
         private void ResetToDefaults(SerializedObject obj) {

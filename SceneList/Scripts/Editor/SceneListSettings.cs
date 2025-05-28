@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Nexcide.SceneList {
@@ -17,15 +18,9 @@ namespace Nexcide.SceneList {
 
     class SceneListSettings : ScriptableObject {
 
-        private const string KeyPrefix = "SceneList_";
-
         public const string AssetsRoot = "Assets/";
 
-        // settings keys
-        private const string KeyUseBuildSettings = KeyPrefix + "UseBuildSettings";
-        private const string KeyFoldersList = KeyPrefix + "Folders";
-        private const string KeyShowFolderLabels = KeyPrefix + "ShowFolderLabels";
-        private const string KeyLogLevel = KeyPrefix + "LogLevel";
+        private const string SettingsAssetPath = "ProjectSettings/NexcideSceneList.asset";
 
         // setting defaults
         private const bool DefaultUseBuildSettings = false;
@@ -36,7 +31,7 @@ namespace Nexcide.SceneList {
 
         [SerializeField] private bool _useBuildSettings;
         [SerializeField] private bool _showFolderLabels;
-        [SerializeField] private List<string> _foldersList;
+        [SerializeField] private List<string> _foldersList = new();
         [SerializeField] private LogLevel _logLevel;
 
         private static SceneListSettings _settings;
@@ -69,37 +64,33 @@ namespace Nexcide.SceneList {
 
         private static SceneListSettings GetSettings() {
             if (_settings == null) {
-                _settings = ScriptableObject.CreateInstance<SceneListSettings>();
-                _settings.Load();
+                Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(SettingsAssetPath);
+                _settings = (objs.Length > 0 ? objs[0] : null) as SceneListSettings;
+
+                if (_settings != null) {
+                    Log.d(_settings._logLevel, _settings, $"Loaded {nameof(SceneListSettings)}");
+                } else {
+                    _settings = CreateInstance<SceneListSettings>();
+                    _settings.name = nameof(SceneListSettings);
+                    SerializedObject obj = new(_settings);
+                    ResetToDefaults(obj);
+                    obj.ApplyModifiedProperties();
+                    _settings.Save();
+
+                    Log.i(_settings._logLevel, _settings, $"Created: {SettingsAssetPath}");
+                }
             }
 
             return _settings;
         }
 
-        private void Load() {
-            name = nameof(SceneListSettings);
-
-            _useBuildSettings = EditorPrefs.GetBool(KeyUseBuildSettings, DefaultUseBuildSettings);
-            _logLevel = (LogLevel)EditorPrefs.GetInt(KeyLogLevel, (int)LogLevel.Default);
-
-            string joinedFoldersList = EditorPrefs.GetString(KeyFoldersList, string.Join(Path.PathSeparator, DefaultFoldersList));
-            Log.v(_logLevel, this, $"Load(), joinedFoldersList: {joinedFoldersList}");
-            _foldersList = new List<string>(joinedFoldersList.Split(Path.PathSeparator));
-
-            _showFolderLabels = EditorPrefs.GetBool(KeyShowFolderLabels, DefaultShowFolderLabels);
-
-            Log.d(_logLevel, this, "Loaded");
-        }
-
         private void Save() {
-            EditorPrefs.SetBool(KeyUseBuildSettings, _useBuildSettings);
-            EditorPrefs.SetInt(KeyLogLevel, (int)_logLevel);
+            string folderPath = Path.GetDirectoryName(SettingsAssetPath);
+            if (!Directory.Exists(folderPath)) {
+                Directory.CreateDirectory(folderPath);
+            }
 
-            string joinedFoldersList = string.Join(Path.PathSeparator, _foldersList);
-            Log.v(_logLevel, this, $"Save(), joinedFoldersList: {joinedFoldersList}");
-            EditorPrefs.SetString(KeyFoldersList, joinedFoldersList);
-
-            EditorPrefs.SetBool(KeyShowFolderLabels, _showFolderLabels);
+            InternalEditorUtility.SaveToSerializedFileAndForget(new[] { _settings }, SettingsAssetPath, allowTextSerialization: true);
         }
 
         private static void ResetToDefaults(SerializedObject obj) {

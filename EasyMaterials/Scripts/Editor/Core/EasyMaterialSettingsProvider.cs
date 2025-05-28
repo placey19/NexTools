@@ -5,6 +5,8 @@ namespace Nexcide.EasyMaterials {
 
     class EasyMaterialSettingsProvider : SettingsProvider {
 
+        private const string SettingsPath = "Project/Nexcide/Easy Materials";
+
         private static EasyMaterialSettingsProvider _instance;
 
         [SettingsProvider]
@@ -13,12 +15,10 @@ namespace Nexcide.EasyMaterials {
         }
 
         public static void RepaintIfActive() {
-            if (_instance != null) {
-                _instance.Repaint();
-            }
+            _instance?.Repaint();
         }
 
-        public EasyMaterialSettingsProvider() : base("Preferences/Nexcide/Easy Materials", SettingsScope.User) {
+        public EasyMaterialSettingsProvider() : base(SettingsPath, SettingsScope.Project) {
             keywords = GetSearchKeywordsFromGUIContentProperties<SettingsContent>();
         }
 

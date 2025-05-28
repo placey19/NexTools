@@ -105,7 +105,7 @@ namespace Nexcide.EasyMaterials {
                 _assetPreview = new Texture2D(assetPreview.width, assetPreview.height, assetPreview.format, false);
                 Graphics.CopyTexture(assetPreview, _assetPreview);
 
-                EasyMaterialTool.RepaintIfActive();
+                EasyMaterialWindow.RepaintIfActive();
             }
         }
 
@@ -119,7 +119,7 @@ namespace Nexcide.EasyMaterials {
                         Graphics.CopyTexture(assetPreview, _assetPreview);
 
                         _refreshingAssetPreview = false;
-                        EasyMaterialTool.RepaintIfActive();
+                        EasyMaterialWindow.RepaintIfActive();
                     } else {
                         if (_assetPreviewRefreshExpireTime == 0.0) {
                             _assetPreviewRefreshExpireTime = (EditorApplication.timeSinceStartup + AssetPreviewMaxRefreshDuration);

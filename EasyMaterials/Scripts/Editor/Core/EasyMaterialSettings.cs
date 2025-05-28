@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 using static Nexcide.EasyMaterials.EasyMaterialUtil;
@@ -25,21 +27,7 @@ namespace Nexcide.EasyMaterials {
 
     class EasyMaterialSettings : ScriptableObject {
 
-        private const string KeyPrefix = "EasyMaterials_";
-
-        // settings keys
-        public const string KeyIncludeChildObjects = KeyPrefix + "IncludeChildObjects";
-        public const string KeyMaterialNameUnderIcon = KeyPrefix + "MaterialNameUnderIcon";
-        public const string KeyMaterialCountStatusBar = KeyPrefix + "MaterialCountInStatusBar";
-        public const string KeyMaxRecentMaterials = KeyPrefix + "MaxRecentMaterials";
-        public const string KeyIconSize = KeyPrefix + "IconSize";
-        public const string KeyMaterialGroup1Tint = KeyPrefix + "MaterialGroup1Tint";
-        public const string KeyMaterialGroup2Tint = KeyPrefix + "MaterialGroup2Tint";
-        public const string KeyMaterialGroup3Tint = KeyPrefix + "MaterialGroup3Tint";
-        public const string KeyAssetMaterialTint = KeyPrefix + "AssetMaterialTint";
-        public const string KeySelectedTint = KeyPrefix + "SelectedTint";
-        public const string KeyErrorTint = KeyPrefix + "ErrorTint";
-        public const string KeyDebugLogging = KeyPrefix + "DebugLogging";
+        private const string SettingsAssetPath = "ProjectSettings/NexcideEasyMaterials.asset";
 
         // setting limits
         public const int IconSizeMin = 24;
@@ -66,6 +54,8 @@ namespace Nexcide.EasyMaterials {
         public static readonly Color DefaultSelectedTint = HexColorRGB(0x444444);
         public static readonly Color DefaultErrorTint = HexColorRGB(0xff0000);
 
+        private static EasyMaterialSettings _settings;
+
         [SerializeField] private bool _includeChildObjects;
         [SerializeField] private bool _materialNameUnderIcon;
         [SerializeField] private bool _materialCountStatusBar;
@@ -80,8 +70,6 @@ namespace Nexcide.EasyMaterials {
         [SerializeField] private bool _debugLogging;
 
         private Color[] _materialGroupTints;
-
-        private static EasyMaterialSettings _settings;
 
         private void OnValidate() {
             // ensure settings don't exceed the predefined limits
@@ -114,13 +102,15 @@ namespace Nexcide.EasyMaterials {
         }
 
         public static void IconSize(int iconSize) {
-            GetSettings()._iconSize = iconSize;
-            EditorPrefs.SetInt(KeyIconSize, iconSize);
+            EasyMaterialSettings settings = GetSettings();
+            settings._iconSize = iconSize;
+            settings.Save();
+
             EasyMaterialSettingsProvider.RepaintIfActive();
         }
 
         public static Color[] MaterialGroupTints() {
-            return GetSettings()._materialGroupTints;
+            return GetSettings().GetMaterialGroupTintsArray();
         }
 
         public static Color AssetMaterialTint() {
@@ -137,49 +127,34 @@ namespace Nexcide.EasyMaterials {
 
         private static EasyMaterialSettings GetSettings() {
             if (_settings == null) {
-                _settings = ScriptableObject.CreateInstance<EasyMaterialSettings>();
-                _settings.Load();
+                Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(SettingsAssetPath);
+                _settings = (objs.Length > 0 ? objs[0] : null) as EasyMaterialSettings;
 
-                Log.d("Created and loaded EasyMaterialSettings");
+                if (_settings != null) {
+                    Log.d($"Loaded {nameof(EasyMaterialSettings)}");
+                } else {
+                    _settings = CreateInstance<EasyMaterialSettings>();
+                    SerializedObject obj = new(_settings);
+                    ResetToDefaults(obj);
+                    obj.ApplyModifiedProperties();
+                    _settings.Save();
+
+                    Log.i($"Created: {SettingsAssetPath}");
+                }
+
+                Log.DebugLogging = _settings._debugLogging;
             }
 
             return _settings;
         }
 
-        private void Load() {
-            _includeChildObjects = EditorPrefs.GetBool(KeyIncludeChildObjects, DefaultIncludeChildObjects);
-            _materialNameUnderIcon = EditorPrefs.GetBool(KeyMaterialNameUnderIcon, DefaultMaterialNameUnderIcon);
-            _materialCountStatusBar = EditorPrefs.GetBool(KeyMaterialCountStatusBar, DefaultMaterialCountStatusBar);
-            _maxRecentMaterials = EditorPrefs.GetInt(KeyMaxRecentMaterials, DefaultMaxRecentMaterials);
-            _iconSize = EditorPrefs.GetInt(KeyIconSize, DefaultIconSize);
-            _materialGroup1Tint = EditorPrefsGetColor(KeyMaterialGroup1Tint, DefaultMaterialGroupTints[0]);
-            _materialGroup2Tint = EditorPrefsGetColor(KeyMaterialGroup2Tint, DefaultMaterialGroupTints[1]);
-            _materialGroup3Tint = EditorPrefsGetColor(KeyMaterialGroup3Tint, DefaultMaterialGroupTints[2]);
-            _assetMaterialTint = EditorPrefsGetColor(KeyAssetMaterialTint, DefaultAssetMaterialTint);
-            _selectedTint = EditorPrefsGetColor(KeySelectedTint, DefaultSelectedTint);
-            _errorTint = EditorPrefsGetColor(KeyErrorTint, DefaultErrorTint);
-            _debugLogging = EditorPrefs.GetBool(KeyDebugLogging, DefaultDebugLogging);
-            Log.DebugLogging = _debugLogging;
-
-            UpdateMaterialGroupTintsArray();
-        }
-
         private void Save() {
-            EditorPrefs.SetBool(KeyIncludeChildObjects, _includeChildObjects);
-            EditorPrefs.SetBool(KeyMaterialNameUnderIcon, _materialNameUnderIcon);
-            EditorPrefs.SetBool(KeyMaterialCountStatusBar, _materialCountStatusBar);
-            EditorPrefs.SetInt(KeyMaxRecentMaterials, _maxRecentMaterials);
-            EditorPrefs.SetInt(KeyIconSize, _iconSize);
-            EditorPrefsSetColor(KeyMaterialGroup1Tint, _materialGroup1Tint);
-            EditorPrefsSetColor(KeyMaterialGroup2Tint, _materialGroup2Tint);
-            EditorPrefsSetColor(KeyMaterialGroup3Tint, _materialGroup3Tint);
-            EditorPrefsSetColor(KeyAssetMaterialTint, _assetMaterialTint);
-            EditorPrefsSetColor(KeySelectedTint, _selectedTint);
-            EditorPrefsSetColor(KeyErrorTint, _errorTint);
-            EditorPrefs.SetBool(KeyDebugLogging, _debugLogging);
-            Log.DebugLogging = _debugLogging;
+            string folderPath = Path.GetDirectoryName(SettingsAssetPath);
+            if (!Directory.Exists(folderPath)) {
+                Directory.CreateDirectory(folderPath);
+            }
 
-            UpdateMaterialGroupTintsArray();
+            InternalEditorUtility.SaveToSerializedFileAndForget(ToArray(_settings), SettingsAssetPath, allowTextSerialization: true);
         }
 
         private static void ResetToDefaults(SerializedObject obj) {
@@ -196,21 +171,21 @@ namespace Nexcide.EasyMaterials {
             obj.FindProperty(nameof(_errorTint)).colorValue = DefaultErrorTint;
             obj.FindProperty(nameof(_debugLogging)).boolValue = DefaultDebugLogging;
             Log.DebugLogging = DefaultDebugLogging;
-
-            _settings.UpdateMaterialGroupTintsArray();
         }
 
-        private void UpdateMaterialGroupTintsArray() {
+        private Color[] GetMaterialGroupTintsArray() {
             _materialGroupTints ??= new Color[3];
             _materialGroupTints[0] = _materialGroup1Tint;
             _materialGroupTints[1] = _materialGroup2Tint;
             _materialGroupTints[2] = _materialGroup3Tint;
+
+            return _materialGroupTints;
         }
 
         // called by SettingsProvider
         public static void OnGUI() {
             EasyMaterialSettings settings = GetSettings();
-            SerializedObject obj = new SerializedObject(settings);
+            SerializedObject obj = new(settings);
 
             EditorGUILayout.Separator();
 
@@ -256,13 +231,13 @@ namespace Nexcide.EasyMaterials {
 
             if (modified) {
                 settings.Save();
-                EasyMaterialTool.RepaintIfActive();
+                EasyMaterialWindow.RepaintIfActive();
             }
         }
 
         public static void UndoRedoPerformed() {
             GetSettings().Save();
-            EasyMaterialTool.RepaintIfActive();
+            EasyMaterialWindow.RepaintIfActive();
         }
 
         private static void PropertyField(SerializedObject obj, string propertyName, GUIContent label) {
