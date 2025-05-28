@@ -1,7 +1,7 @@
-﻿using System.IO;
-using UnityEditor;
-using UnityEditorInternal;
+﻿using UnityEditor;
 using UnityEngine;
+
+using static Nexcide.EditorUtil;
 
 namespace Nexcide.TileKing {
 
@@ -35,8 +35,7 @@ namespace Nexcide.TileKing {
 
         private static TileKingSettings GetSettings() {
             if (_settings == null) {
-                Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(SettingsAssetPath);
-                _settings = (objs.Length > 0 ? objs[0] : null) as TileKingSettings;
+                _settings = LoadSettings<TileKingSettings>(SettingsAssetPath);
 
                 if (_settings != null) {
                     Log.d(_settings._logLevel, _settings, $"Loaded {nameof(TileKingSettings)}");
@@ -46,7 +45,7 @@ namespace Nexcide.TileKing {
                     SerializedObject obj = new(_settings);
                     _settings.ResetToDefaults(obj);
                     obj.ApplyModifiedProperties();
-                    _settings.Save();
+                    SaveSettings(_settings, SettingsAssetPath);
 
                     Log.i(_settings._logLevel, _settings, $"Created: {SettingsAssetPath}");
                 }
@@ -55,14 +54,6 @@ namespace Nexcide.TileKing {
             return _settings;
         }
 
-        private void Save() {
-            string folderPath = Path.GetDirectoryName(SettingsAssetPath);
-            if (!Directory.Exists(folderPath)) {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            InternalEditorUtility.SaveToSerializedFileAndForget(new[] { _settings }, SettingsAssetPath, allowTextSerialization: true);
-        }
 
         private void ResetToDefaults(SerializedObject obj) {
             if (FindDefaultPrefabAsset(out GameObject defaultPrefabAsset)) {
@@ -127,10 +118,10 @@ namespace Nexcide.TileKing {
             EditorGUIUtility.fieldWidth = cachedFieldWidth;
 
             if (obj.hasModifiedProperties) {
-                _settings.ValidatePrefabAsset(obj, currentPrefabAsset);
+                settings.ValidatePrefabAsset(obj, currentPrefabAsset);
 
                 obj.ApplyModifiedProperties();
-                settings.Save();
+                SaveSettings(settings, SettingsAssetPath);
             }
         }
 
@@ -162,7 +153,7 @@ namespace Nexcide.TileKing {
         }
 
         public static void UndoRedoPerformed() {
-            GetSettings().Save();
+            SaveSettings(GetSettings(), SettingsAssetPath);
         }
 
         private static void PropertyField(SerializedObject obj, string propertyName, GUIContent label) {

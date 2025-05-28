@@ -1,9 +1,8 @@
-﻿using System.IO;
-using UnityEditor;
-using UnityEditorInternal;
+﻿using UnityEditor;
 using UnityEngine;
 
 using static Nexcide.EasyMaterials.EasyMaterialUtil;
+using static Nexcide.EditorUtil;
 
 namespace Nexcide.EasyMaterials {
 
@@ -104,7 +103,7 @@ namespace Nexcide.EasyMaterials {
         public static void IconSize(int iconSize) {
             EasyMaterialSettings settings = GetSettings();
             settings._iconSize = iconSize;
-            settings.Save();
+            SaveSettings(settings, SettingsAssetPath);
 
             EasyMaterialSettingsProvider.RepaintIfActive();
         }
@@ -127,8 +126,7 @@ namespace Nexcide.EasyMaterials {
 
         private static EasyMaterialSettings GetSettings() {
             if (_settings == null) {
-                Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(SettingsAssetPath);
-                _settings = (objs.Length > 0 ? objs[0] : null) as EasyMaterialSettings;
+                _settings = LoadSettings<EasyMaterialSettings>(SettingsAssetPath);
 
                 if (_settings != null) {
                     Log.d($"Loaded {nameof(EasyMaterialSettings)}");
@@ -137,7 +135,7 @@ namespace Nexcide.EasyMaterials {
                     SerializedObject obj = new(_settings);
                     ResetToDefaults(obj);
                     obj.ApplyModifiedProperties();
-                    _settings.Save();
+                    SaveSettings(_settings, SettingsAssetPath);
 
                     Log.i($"Created: {SettingsAssetPath}");
                 }
@@ -146,15 +144,6 @@ namespace Nexcide.EasyMaterials {
             }
 
             return _settings;
-        }
-
-        private void Save() {
-            string folderPath = Path.GetDirectoryName(SettingsAssetPath);
-            if (!Directory.Exists(folderPath)) {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            InternalEditorUtility.SaveToSerializedFileAndForget(ToArray(_settings), SettingsAssetPath, allowTextSerialization: true);
         }
 
         private static void ResetToDefaults(SerializedObject obj) {
@@ -230,13 +219,13 @@ namespace Nexcide.EasyMaterials {
             obj.ApplyModifiedProperties();
 
             if (modified) {
-                settings.Save();
+                SaveSettings(settings, SettingsAssetPath);
                 EasyMaterialWindow.RepaintIfActive();
             }
         }
 
         public static void UndoRedoPerformed() {
-            GetSettings().Save();
+            SaveSettings(GetSettings(), SettingsAssetPath);
             EasyMaterialWindow.RepaintIfActive();
         }
 

@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Nexcide.EasyMaterials {
 
@@ -11,7 +10,7 @@ namespace Nexcide.EasyMaterials {
         private const string Ellipsis = "...";
 
         // reused by GetTextWidth() so it doesn't need to create a new one each time
-        private static readonly GUIContent _textContentCache = new GUIContent();
+        private static readonly GUIContent _textContentCache = new();
 
         /// <summary>
         /// Convert one or more items as parameters into an array.
@@ -42,31 +41,6 @@ namespace Nexcide.EasyMaterials {
         }
 
         /// <summary>
-        /// Store a color as a string in EditorPrefs.
-        /// </summary>
-        public static void EditorPrefsSetColor(string key, Color color) {
-            string htmlString = ColorUtility.ToHtmlStringRGBA(color);
-            EditorPrefs.SetString(key, htmlString);
-        }
-
-        /// <summary>
-        /// Get color from EditorPrefs that has been stored as a string.
-        /// </summary>
-        public static Color EditorPrefsGetColor(string key, Color defaultColor) {
-            Color color = defaultColor;
-
-            if (EditorPrefs.HasKey(key)) {
-                string htmlColor = "#" + EditorPrefs.GetString(key);
-
-                if (!ColorUtility.TryParseHtmlString(htmlColor, out color)) {
-                    Log.e("Failed to parse color from EditorPrefs");
-                }
-            }
-
-            return color;
-        }
-
-        /// <summary>
         /// Get the width of some text using the given style.
         /// </summary>
         public static float GetTextWidth(string text, GUIStyle style) {
@@ -85,7 +59,7 @@ namespace Nexcide.EasyMaterials {
             if (GetTextWidth(text, style) > availableWidth) {
                 // first clip 1 more char than the length of the ellipsis text
                 int length = Mathf.Max(text.Length - (Ellipsis.Length + 1), 0);
-                string clippedText = text.Substring(0, length);
+                string clippedText = text[..length];
 
                 // remove 1 char at a time until the width of the text fits in the available space
                 // this could be done more efficiently by doing a binary chop through the text widths but... meh

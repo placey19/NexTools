@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
+
+using static Nexcide.EditorUtil;
 
 namespace Nexcide.SceneList {
 
@@ -64,8 +64,7 @@ namespace Nexcide.SceneList {
 
         private static SceneListSettings GetSettings() {
             if (_settings == null) {
-                Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(SettingsAssetPath);
-                _settings = (objs.Length > 0 ? objs[0] : null) as SceneListSettings;
+                _settings = LoadSettings<SceneListSettings>(SettingsAssetPath);
 
                 if (_settings != null) {
                     Log.d(_settings._logLevel, _settings, $"Loaded {nameof(SceneListSettings)}");
@@ -75,22 +74,13 @@ namespace Nexcide.SceneList {
                     SerializedObject obj = new(_settings);
                     ResetToDefaults(obj);
                     obj.ApplyModifiedProperties();
-                    _settings.Save();
+                    SaveSettings(_settings, SettingsAssetPath);
 
                     Log.i(_settings._logLevel, _settings, $"Created: {SettingsAssetPath}");
                 }
             }
 
             return _settings;
-        }
-
-        private void Save() {
-            string folderPath = Path.GetDirectoryName(SettingsAssetPath);
-            if (!Directory.Exists(folderPath)) {
-                Directory.CreateDirectory(folderPath);
-            }
-
-            InternalEditorUtility.SaveToSerializedFileAndForget(new[] { _settings }, SettingsAssetPath, allowTextSerialization: true);
         }
 
         private static void ResetToDefaults(SerializedObject obj) {
@@ -146,13 +136,13 @@ namespace Nexcide.SceneList {
             EditorGUIUtility.fieldWidth = cachedFieldWidth;
 
             if (obj.ApplyModifiedProperties()) {
-                settings.Save();
+                SaveSettings(settings, SettingsAssetPath);
                 SceneList.RefreshIfActive();
             }
         }
 
         public static void UndoRedoPerformed() {
-            GetSettings().Save();
+            SaveSettings(GetSettings(), SettingsAssetPath);
             SceneList.RefreshIfActive();
         }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 
 namespace Nexcide {
@@ -49,6 +51,20 @@ namespace Nexcide {
             }
 
             return changed;
+        }
+
+        public static T LoadSettings<T>(string path) where T : ScriptableObject {
+            UnityEngine.Object[] objs = InternalEditorUtility.LoadSerializedFileAndForget(path);
+            return (objs.Length > 0 ? objs[0] : null) as T;
+        }
+
+        public static void SaveSettings(ScriptableObject obj, string path) {
+            string folderPath = Path.GetDirectoryName(path);
+            if (!Directory.Exists(folderPath)) {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            InternalEditorUtility.SaveToSerializedFileAndForget(new[] { obj }, path, allowTextSerialization: true);
         }
 
         /// <summary>
