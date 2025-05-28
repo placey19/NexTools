@@ -2,6 +2,7 @@
     "name": "Nexcide.EasyMaterials.Editor",
     "rootNamespace": "Nexcide.EasyMaterials",
     "references": [
+        "GUID:61bb9281e2182dd4eaa1b366592839b9",
         "GUID:6b218f98faec7e848bc5e3a6e097aed3"
     ],
     "includePlatforms": [

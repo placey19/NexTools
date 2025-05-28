@@ -67,7 +67,9 @@ namespace Nexcide.SceneList {
                 _settings = LoadSettings<SceneListSettings>(SettingsAssetPath);
 
                 if (_settings != null) {
-                    Log.d(_settings._logLevel, _settings, $"Loaded {nameof(SceneListSettings)}");
+                    _settings.name = nameof(SceneListSettings);
+
+                    Log.d(_settings._logLevel, _settings, "Loaded");
                 } else {
                     _settings = CreateInstance<SceneListSettings>();
                     _settings.name = nameof(SceneListSettings);
@@ -137,13 +139,13 @@ namespace Nexcide.SceneList {
 
             if (obj.ApplyModifiedProperties()) {
                 SaveSettings(settings, SettingsAssetPath);
-                SceneList.RefreshIfActive();
+                SceneListWindow.RefreshIfActive();
             }
         }
 
         public static void UndoRedoPerformed() {
             SaveSettings(GetSettings(), SettingsAssetPath);
-            SceneList.RefreshIfActive();
+            SceneListWindow.RefreshIfActive();
         }
 
         private static void PropertyField(SerializedObject obj, string propertyName, GUIContent label) {

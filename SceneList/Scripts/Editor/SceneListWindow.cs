@@ -7,12 +7,11 @@ using UnityEngine.SceneManagement;
 
 namespace Nexcide.SceneList {
 
-    public class SceneList : EditorWindow, IHasCustomMenu {
+    public class SceneListWindow : EditorWindow, IHasCustomMenu {
 
         [MenuItem("Nexcide/Scene List", false, 37)]
         private static void Initialize() {
-            EditorWindow editorWindow = GetWindow<SceneList>(typeof(SceneList));
-            editorWindow.name = "Scene List";
+            EditorWindow editorWindow = GetWindow<SceneListWindow>(typeof(SceneListWindow));
             editorWindow.titleContent = new GUIContent(editorWindow.name);
             editorWindow.Show();
         }
@@ -30,7 +29,7 @@ namespace Nexcide.SceneList {
             }
         }
 
-        private static SceneList _instance;
+        private static SceneListWindow _instance;
 
         private readonly List<SceneData> _sceneDataList = new();
         private Vector3 _scrollPosition;
@@ -45,6 +44,9 @@ namespace Nexcide.SceneList {
         private string AssetsRoot => SceneListSettings.AssetsRoot;
 
         private void OnEnable() {
+            name = nameof(SceneListWindow);
+            Log.v(LogLevel, this, "OnEnable()");
+
             SceneListSettings.Initialize();
             _instance = this;
             EditorSceneManager.activeSceneChanged += OnActiveSceneChanged;
@@ -52,6 +54,8 @@ namespace Nexcide.SceneList {
         }
 
         private void OnDisable() {
+            Log.v(LogLevel, this, "OnDisable()");
+
             EditorSceneManager.activeSceneChanged -= OnActiveSceneChanged;
             _instance = null;
         }

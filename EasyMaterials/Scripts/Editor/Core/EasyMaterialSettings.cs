@@ -21,7 +21,7 @@ namespace Nexcide.EasyMaterials {
         public static GUIContent AssetMaterialTint = new("Asset material tint", "The tint used on materials selected in the project window");
         public static GUIContent SelectedTint = new("Selected material tint", "Color used when material has been used");
         public static GUIContent ErrorTint = new("Material error tint", "Used when a material is deleted");
-        public static GUIContent DebugLogging = new("Enable debug logging", "Extra console logging that you don't want to see unless you're debugging the tool");
+        public static GUIContent LogLevel = new("Level of logging", "Useful for debugging");
     }
 
     class EasyMaterialSettings : ScriptableObject {
@@ -40,7 +40,6 @@ namespace Nexcide.EasyMaterials {
         private const bool DefaultMaterialCountStatusBar = true;
         private const int DefaultMaxRecentMaterials = 50;
         private const int DefaultIconSize = 64;
-        private const bool DefaultDebugLogging = false;
 
         private static readonly Color[] DefaultMaterialGroupTints = new Color[] {
 
@@ -66,7 +65,7 @@ namespace Nexcide.EasyMaterials {
         [SerializeField] private Color _assetMaterialTint;
         [SerializeField] private Color _selectedTint;
         [SerializeField] private Color _errorTint;
-        [SerializeField] private bool _debugLogging;
+        [SerializeField] private LogLevel _logLevel;
 
         private Color[] _materialGroupTints;
 
@@ -124,23 +123,28 @@ namespace Nexcide.EasyMaterials {
             return GetSettings()._errorTint;
         }
 
+        public static LogLevel GetLogLevel() {
+            return GetSettings()._logLevel;
+        }
+
         private static EasyMaterialSettings GetSettings() {
             if (_settings == null) {
                 _settings = LoadSettings<EasyMaterialSettings>(SettingsAssetPath);
 
                 if (_settings != null) {
-                    Log.d($"Loaded {nameof(EasyMaterialSettings)}");
+                    _settings.name = nameof(EasyMaterialSettings);
+
+                    Log.d(_settings._logLevel, _settings, "Loaded");
                 } else {
                     _settings = CreateInstance<EasyMaterialSettings>();
+                    _settings.name = nameof(EasyMaterialSettings);
                     SerializedObject obj = new(_settings);
                     ResetToDefaults(obj);
                     obj.ApplyModifiedProperties();
                     SaveSettings(_settings, SettingsAssetPath);
 
-                    Log.i($"Created: {SettingsAssetPath}");
+                    Log.i(_settings._logLevel, _settings, $"Created: {SettingsAssetPath}");
                 }
-
-                Log.DebugLogging = _settings._debugLogging;
             }
 
             return _settings;
@@ -158,8 +162,7 @@ namespace Nexcide.EasyMaterials {
             obj.FindProperty(nameof(_assetMaterialTint)).colorValue = DefaultAssetMaterialTint;
             obj.FindProperty(nameof(_selectedTint)).colorValue = DefaultSelectedTint;
             obj.FindProperty(nameof(_errorTint)).colorValue = DefaultErrorTint;
-            obj.FindProperty(nameof(_debugLogging)).boolValue = DefaultDebugLogging;
-            Log.DebugLogging = DefaultDebugLogging;
+            obj.FindProperty(nameof(_logLevel)).enumValueIndex = (int)LogLevel.Default;
         }
 
         private Color[] GetMaterialGroupTintsArray() {
@@ -178,8 +181,9 @@ namespace Nexcide.EasyMaterials {
 
             EditorGUILayout.Separator();
 
-            float previousLabelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = EasyMaterialStyles.SettingLabelWidth;
+            float cachedLabelWidth = EditorGUIUtility.labelWidth;
+            float cachedFieldWidth = EditorGUIUtility.fieldWidth;
+            EditorGUIUtility.labelWidth = EasyMaterialSettingsStyles.SettingLabelWidth;
 
             PropertyField(obj, nameof(_includeChildObjects), SettingsContent.IncludeChildObjects);
             PropertyField(obj, nameof(_materialNameUnderIcon), SettingsContent.MaterialNameUnderIcon);
@@ -187,11 +191,11 @@ namespace Nexcide.EasyMaterials {
             PropertyField(obj, nameof(_maxRecentMaterials), SettingsContent.MaximumRecentMaterials);
 
             using (new EditorGUILayout.HorizontalScope()) {
-                EditorGUILayout.LabelField(SettingsContent.IconSize, GUILayout.Width(EasyMaterialStyles.SettingLabelWidth));
+                EditorGUILayout.LabelField(SettingsContent.IconSize, GUILayout.Width(EasyMaterialSettingsStyles.SettingLabelWidth));
 
                 SerializedProperty iconSizeProp = obj.FindProperty(nameof(_iconSize));
                 int oldIconSize = iconSizeProp.intValue;
-                float newIconSize = EditorGUILayout.Slider(oldIconSize, IconSizeMin, IconSizeMax, GUILayout.Width(EasyMaterialStyles.SettingFieldWidth));
+                float newIconSize = EditorGUILayout.Slider(oldIconSize, IconSizeMin, IconSizeMax, GUILayout.Width(EasyMaterialSettingsStyles.SettingFieldWidth));
                 iconSizeProp.intValue = Mathf.RoundToInt(newIconSize);
             }
 
@@ -201,10 +205,12 @@ namespace Nexcide.EasyMaterials {
             PropertyField(obj, nameof(_assetMaterialTint), SettingsContent.AssetMaterialTint);
             PropertyField(obj, nameof(_selectedTint), SettingsContent.SelectedTint);
             PropertyField(obj, nameof(_errorTint), SettingsContent.ErrorTint);
-            PropertyField(obj, nameof(_debugLogging), SettingsContent.DebugLogging);
 
             EditorGUILayout.Separator();
+            EditorGUIUtility.fieldWidth = EasyMaterialSettingsStyles.LogLevelFieldWidth;
+            PropertyField(obj, nameof(_logLevel), SettingsContent.LogLevel);
 
+            EditorGUILayout.Separator();
             using (new EditorGUILayout.HorizontalScope()) {
                 if (GUILayout.Button("Reset to defaults")) {
                     ResetToDefaults(obj);
@@ -213,7 +219,8 @@ namespace Nexcide.EasyMaterials {
                 GUILayout.FlexibleSpace();
             }
 
-            EditorGUIUtility.labelWidth = previousLabelWidth;
+            EditorGUIUtility.labelWidth = cachedLabelWidth;
+            EditorGUIUtility.fieldWidth = cachedFieldWidth;
 
             bool modified = obj.hasModifiedProperties;
             obj.ApplyModifiedProperties();

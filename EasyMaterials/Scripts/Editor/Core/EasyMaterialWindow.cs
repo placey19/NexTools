@@ -46,6 +46,8 @@ namespace Nexcide.EasyMaterials {
         private int _hoveredIndex;
         private bool _dragging;
 
+        public LogLevel LogLevel => EasyMaterialSettings.GetLogLevel();
+
         [MenuItem("Nexcide/Easy Materials")]
         private static void ShowWindow() {
             EasyMaterialWindow window = GetWindow<EasyMaterialWindow>(WindowTitle);
@@ -59,8 +61,9 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void OnEnable() {
+            name = nameof(EasyMaterialWindow);
             EasyMaterialSettings.Initialize();
-            Log.d("OnEnable()");
+            Log.v(LogLevel, this, "OnEnable()");
 
             _instance = this;
 
@@ -86,7 +89,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void OnDisable() {
-            Log.d("OnDisable()");
+            Log.v(LogLevel, this, "OnDisable()");
 
             _instance = null;
             _materials.OnDisable();
@@ -98,7 +101,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void ProjectChanged() {
-            Log.d("ProjectChanged()");
+            Log.d(LogLevel, this, "ProjectChanged()");
 
             _materials.Refresh();
             _statusText = "";
@@ -108,7 +111,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void PlayModeStateChanged(PlayModeStateChange state) {
-            Log.d("PlayModeStateChanged(), state: " + state);
+            Log.d(LogLevel, this, $"PlayModeStateChanged(), state: {state}");
 
             // all material icons need to be refreshed when entering play mode and edit mode (otherwise they end up blank)
             switch (state) {
@@ -127,7 +130,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode) {
-            Log.d("OnSceneOpened(), scene: " + scene.name + ", mode: " + mode);
+            Log.d(LogLevel, this, $"OnSceneOpened(), scene: {scene.name}, mode: {mode}");
 
             // all materials need to be refreshed when opening a new scene (otherwise they end up blank)
             if (mode == OpenSceneMode.Single) {
@@ -136,7 +139,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void OnNewSceneCreated(Scene scene, NewSceneSetup setup, NewSceneMode mode) {
-            Log.d("OnNewSceneCreated(), scene: " + scene + ", setup: " + setup + ", mode: " + mode);
+            Log.d(LogLevel, this, $"OnNewSceneCreated(), scene: {scene}, setup: {setup}, mode: {mode}");
 
             // all materials need to be refreshed when creating a new scene (otherwise they end up blank)
             if (mode == NewSceneMode.Single) {
@@ -157,9 +160,7 @@ namespace Nexcide.EasyMaterials {
         /// Found at: http://leahayes.co.uk/2013/04/30/adding-the-little-padlock-button-to-your-editorwindow.html
         /// </summary>
         private void ShowButton(Rect position) {
-            if (_padlockButtonStyle == null) {
-                _padlockButtonStyle = "IN LockButton";
-            }
+            _padlockButtonStyle ??= "IN LockButton";
 
             _locked = GUI.Toggle(position, _locked, GUIContent.none, _padlockButtonStyle);
         }
@@ -170,7 +171,7 @@ namespace Nexcide.EasyMaterials {
                     Transform selectedTransform = (Selection.activeGameObject != null ? Selection.activeGameObject.transform : null);
 
                     if (selectedTransform != null) {
-                        Log.d("OnSelectionChange(), selectedTransform: " + selectedTransform);
+                        Log.d(LogLevel, this, $"OnSelectionChange(), selectedTransform: {selectedTransform}");
 
                         // if a GameObject has been selected that has a renderer component, add all of its materials to the list
                         int previousTintIndex = _tintIndex;
@@ -193,7 +194,7 @@ namespace Nexcide.EasyMaterials {
                             _tintIndex = previousTintIndex;
                         }
                     } else if (Selection.activeObject != null) {
-                        Log.d("OnSelectionChange(), Selection.activeObject: " + Selection.activeObject);
+                        Log.d(LogLevel, this, $"OnSelectionChange(), Selection.activeObject: {Selection.activeObject}");
 
                         // if a material has been selected in the project window, add it to the list using color from settings
                         if (Selection.activeObject.GetType() == typeof(Material)) {
@@ -218,7 +219,7 @@ namespace Nexcide.EasyMaterials {
 
             float width = position.width;
             float height = (position.height - StatusBarHeight);
-            Rect areaRect = new Rect(0.0f, 0.0f, width, height);
+            Rect areaRect = new(0.0f, 0.0f, width, height);
 
             // handle objects being dragged and dropped into the area
             HandleDragAndDrop(areaRect);
@@ -329,7 +330,7 @@ namespace Nexcide.EasyMaterials {
                 if (e.type == EventType.DragPerform) {
                     DragAndDrop.AcceptDrag();
 
-                    Log.d($"Inserting {materials.Length} materials at index: {_hoveredIndex}");
+                    Log.d(LogLevel, this, $"Inserting {materials.Length} materials at index: {_hoveredIndex}");
                     foreach (Material material in materials) {
                         _materials.InsertAt(_hoveredIndex, material, EasyMaterialSettings.AssetMaterialTint());
                     }
@@ -347,7 +348,7 @@ namespace Nexcide.EasyMaterials {
             // disable the button if we're fully scrolled left
             GUI.enabled = (_scrollPosition.x > 0.0f);
 
-            if (GUILayout.Button(_scrollTextureLeft, EasyMaterialStyles.ScrollButton, GUILayout.Width(ScrollButtonWidth))) {
+            if (GUILayout.Button(_scrollTextureLeft, EasyMaterialSettingsStyles.ScrollButton, GUILayout.Width(ScrollButtonWidth))) {
                 _scrollPosition.x = Mathf.Max(_scrollPosition.x - ScrollButtonStep, 0.0f);
                 Event.current.Use();
             }
@@ -359,7 +360,7 @@ namespace Nexcide.EasyMaterials {
             // disable the button if we're fully scrolled right
             GUI.enabled = !(scrollEnd == _scrollPosition.x);
 
-            if (GUILayout.Button(_scrollTextureRight, EasyMaterialStyles.ScrollButton, GUILayout.Width(ScrollButtonWidth))) {
+            if (GUILayout.Button(_scrollTextureRight, EasyMaterialSettingsStyles.ScrollButton, GUILayout.Width(ScrollButtonWidth))) {
                 _scrollPosition.x = Mathf.Min(_scrollPosition.x + ScrollButtonStep, scrollEnd);
                 Event.current.Use();
             }
@@ -371,7 +372,7 @@ namespace Nexcide.EasyMaterials {
             // disable the button if we're fully scrolled up
             GUI.enabled = (_scrollPosition.y > 0.0f);
 
-            if (GUILayout.Button(_scrollTextureUp, EasyMaterialStyles.ScrollButton, GUILayout.Height(ScrollButtonHeight))) {
+            if (GUILayout.Button(_scrollTextureUp, EasyMaterialSettingsStyles.ScrollButton, GUILayout.Height(ScrollButtonHeight))) {
                 _scrollPosition.y = Mathf.Max(_scrollPosition.y - ScrollButtonStep, 0.0f);
                 Event.current.Use();
             }
@@ -383,7 +384,7 @@ namespace Nexcide.EasyMaterials {
             // disable the button if we're fully scrolled down
             GUI.enabled = !(scrollEnd == _scrollPosition.y);
 
-            if (GUILayout.Button(_scrollTextureDown, EasyMaterialStyles.ScrollButton, GUILayout.Height(ScrollButtonHeight))) {
+            if (GUILayout.Button(_scrollTextureDown, EasyMaterialSettingsStyles.ScrollButton, GUILayout.Height(ScrollButtonHeight))) {
                 _scrollPosition.y += Mathf.Min(_scrollPosition.y + ScrollButtonStep, scrollEnd);
                 Event.current.Use();
             }
@@ -392,171 +393,168 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void DrawMaterialsVertical(out float scrollEnd, out bool showScrollButtons, bool list) {
+            using VerticalScope scope = new(GUILayout.ExpandHeight(true));
             Event e = Event.current;
 
-            using (VerticalScope scope = new VerticalScope(GUILayout.ExpandHeight(true))) {
-                float iconSize = EasyMaterialSettings.IconSize();
+            float iconSize = EasyMaterialSettings.IconSize();
 
-                Vector2 cellSize;
-                if (list) {
-                    cellSize = new Vector2(scope.rect.width, EasyMaterialSettings.IconSizeMin + GridSpacing);
-                } else {
-                    float size = (iconSize + GridSpacing);
-                    cellSize = new Vector2(size, size);
-                }
-
-                // calculate columns, rows and rectangle for the grid of materials
-                int columns = (int)(scope.rect.width / cellSize.x);
-                int rows = (columns > 0 ? Mathf.CeilToInt((float)_materials.Count / columns) : 1);
-                float width = (columns * cellSize.x);
-                float height = (rows * cellSize.y);
-                Rect viewRect = new Rect(0.0f, 0.0f, width, height);
-
-                // set whether or not to show scroll buttons
-                if (e.type == EventType.Repaint) {
-                    float scrollButtonsHeight = (_showScrollButtons ? ScrollButtonHeight * 2.0f : 0.0f);
-                    float availableHeight = (scope.rect.height + scrollButtonsHeight);
-                    float requiredHeight = viewRect.height;
-                    showScrollButtons = (requiredHeight > availableHeight);
-                } else {
-                    showScrollButtons = _showScrollButtons;
-                }
-
-                // set the value for the end of scroll position
-                scrollEnd = (viewRect.height - scope.rect.height);
-
-                DrawMaterialButtons(e, scope.rect, viewRect, cellSize, width, list);
+            Vector2 cellSize;
+            if (list) {
+                cellSize = new(scope.rect.width, EasyMaterialSettings.IconSizeMin + GridSpacing);
+            } else {
+                float size = (iconSize + GridSpacing);
+                cellSize = new(size, size);
             }
+
+            // calculate columns, rows and rectangle for the grid of materials
+            int columns = (int)(scope.rect.width / cellSize.x);
+            int rows = (columns > 0 ? Mathf.CeilToInt((float)_materials.Count / columns) : 1);
+            float width = (columns * cellSize.x);
+            float height = (rows * cellSize.y);
+            Rect viewRect = new(0.0f, 0.0f, width, height);
+
+            // set whether or not to show scroll buttons
+            if (e.type == EventType.Repaint) {
+                float scrollButtonsHeight = (_showScrollButtons ? ScrollButtonHeight * 2.0f : 0.0f);
+                float availableHeight = (scope.rect.height + scrollButtonsHeight);
+                float requiredHeight = viewRect.height;
+                showScrollButtons = (requiredHeight > availableHeight);
+            } else {
+                showScrollButtons = _showScrollButtons;
+            }
+
+            // set the value for the end of scroll position
+            scrollEnd = (viewRect.height - scope.rect.height);
+
+            DrawMaterialButtons(e, scope.rect, viewRect, cellSize, width, list);
         }
 
         private void DrawMaterialsHorizontal(out float scrollEnd, out bool showScrollButtons) {
+            using HorizontalScope scope = new(GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
             Event e = Event.current;
 
-            using (HorizontalScope scope = new HorizontalScope(GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true))) {
-                float iconSize = EasyMaterialSettings.IconSize();
-                Vector2 cellSize = new Vector2(iconSize + GridSpacing, iconSize + GridSpacing);
+            float iconSize = EasyMaterialSettings.IconSize();
+            Vector2 cellSize = new(iconSize + GridSpacing, iconSize + GridSpacing);
 
-                // calculate columns, rows and rectangle for the grid of materials
-                int columns = (int)(scope.rect.width / cellSize.x);
-                int rows = Mathf.Max((int)(scope.rect.height / cellSize.y), 1);
-                int cellCount = (rows * columns);
+            // calculate columns, rows and rectangle for the grid of materials
+            int columns = (int)(scope.rect.width / cellSize.x);
+            int rows = Mathf.Max((int)(scope.rect.height / cellSize.y), 1);
+            int cellCount = (rows * columns);
 
-                // recalculate columns based on available rows if available cell count won't fit all the materials
-                if (columns > 0 && cellCount < _materials.Count) {
-                    columns = Mathf.CeilToInt((float)_materials.Count / rows);
-                }
-
-                float width = (columns * cellSize.x);
-                float height = (rows * cellSize.y);
-                Rect viewRect = new Rect(0.0f, 0.0f, width, height);
-
-                // set whether or not to show scroll buttons
-                if (e.type == EventType.Repaint) {
-                    float scrollButtonsWidth = (_showScrollButtons ? ScrollButtonWidth * 2.0f : 0.0f);
-                    float availableWidth = (scope.rect.width + scrollButtonsWidth);
-                    float requiredWidth = viewRect.width;
-                    showScrollButtons = (requiredWidth > availableWidth);
-                } else {
-                    showScrollButtons = _showScrollButtons;
-                }
-
-                // set the value for the end of scroll position
-                scrollEnd = (viewRect.width - scope.rect.width);
-
-                DrawMaterialButtons(e, scope.rect, viewRect, cellSize, width, false);
+            // recalculate columns based on available rows if available cell count won't fit all the materials
+            if (columns > 0 && cellCount < _materials.Count) {
+                columns = Mathf.CeilToInt((float)_materials.Count / rows);
             }
+
+            float width = (columns * cellSize.x);
+            float height = (rows * cellSize.y);
+            Rect viewRect = new(0.0f, 0.0f, width, height);
+
+            // set whether or not to show scroll buttons
+            if (e.type == EventType.Repaint) {
+                float scrollButtonsWidth = (_showScrollButtons ? ScrollButtonWidth * 2.0f : 0.0f);
+                float availableWidth = (scope.rect.width + scrollButtonsWidth);
+                float requiredWidth = viewRect.width;
+                showScrollButtons = (requiredWidth > availableWidth);
+            } else {
+                showScrollButtons = _showScrollButtons;
+            }
+
+            // set the value for the end of scroll position
+            scrollEnd = (viewRect.width - scope.rect.width);
+
+            DrawMaterialButtons(e, scope.rect, viewRect, cellSize, width, false);
         }
 
         private void DrawMaterialButtons(Event e, Rect scopeRect, Rect viewRect, Vector2 cellSize, float width, bool list) {
-            using (GUI.ScrollViewScope scrollViewScope = new GUI.ScrollViewScope(scopeRect, _scrollPosition, viewRect, GUIStyle.none, GUIStyle.none)) {
-                _scrollPosition = scrollViewScope.scrollPosition;
+            using GUI.ScrollViewScope scrollViewScope = new(scopeRect, _scrollPosition, viewRect, GUIStyle.none, GUIStyle.none);
+            _scrollPosition = scrollViewScope.scrollPosition;
 
-                // calculate visible rect so we only draw buttons that will actually be visible
-                Rect visibleRect = viewRect;
-                visibleRect.x += _scrollPosition.x;
-                visibleRect.y += _scrollPosition.y;
+            // calculate visible rect so we only draw buttons that will actually be visible
+            Rect visibleRect = viewRect;
+            visibleRect.x += _scrollPosition.x;
+            visibleRect.y += _scrollPosition.y;
 
-                // iterate in reverse order through the list so last added is processed first
-                Vector2 gridPosition = new Vector2(GridSpacing, GridSpacing);
-                List<MaterialData> materialDataList = _materials.List();
+            // iterate in reverse order through the list so last added is processed first
+            Vector2 gridPosition = new(GridSpacing, GridSpacing);
+            List<MaterialData> materialDataList = _materials.List();
 
-                bool mouseOverAnyMaterialRect = false;
-                for (int i = (materialDataList.Count - 1); i >= 0; --i) {
-                    MaterialData materialData = materialDataList[i];
-                    Rect materialRect = new Rect(gridPosition.x, gridPosition.y, cellSize.x - GridSpacing, cellSize.y - GridSpacing);
+            bool mouseOverAnyMaterialRect = false;
+            for (int i = (materialDataList.Count - 1); i >= 0; --i) {
+                MaterialData materialData = materialDataList[i];
+                Rect materialRect = new(gridPosition.x, gridPosition.y, cellSize.x - GridSpacing, cellSize.y - GridSpacing);
 
-                    bool dragTarget = false;
-                    bool drawButtonEvent = (e.type == EventType.Repaint || e.type == EventType.MouseDown || e.type == EventType.MouseUp);
+                bool dragTarget = false;
+                bool drawButtonEvent = (e.type == EventType.Repaint || e.type == EventType.MouseDown || e.type == EventType.MouseUp);
 
-                    if (drawButtonEvent || e.type == EventType.MouseDrag) {
-                        if (HandleMouseForMaterial(e, materialData, materialRect)) {
-                            _hoveredIndex = i;
-                            dragTarget = _dragging;
-                            mouseOverAnyMaterialRect = true;
-                        }
+                if (drawButtonEvent || e.type == EventType.MouseDrag) {
+                    if (HandleMouseForMaterial(e, materialData, materialRect)) {
+                        _hoveredIndex = i;
+                        dragTarget = _dragging;
+                        mouseOverAnyMaterialRect = true;
                     }
+                }
 
-                    // glorious optimization... only draw buttons during specific events and only if they're visible
-                    if (drawButtonEvent && visibleRect.Overlaps(materialRect)) {
-                        GUIStyle style;
-                        GUIContent content;
+                // glorious optimization... only draw buttons during specific events and only if they're visible
+                if (drawButtonEvent && visibleRect.Overlaps(materialRect)) {
+                    GUIStyle style;
+                    GUIContent content;
 
-                        // set button style & content depending on configuration
-                        float availableWidth = EasyMaterialSettings.IconSize();
-                        if (list) {
-                            style = EasyMaterialStyles.MaterialButtonList;
-                            content = new GUIContent(materialData.GetName(), materialData.GetAssetPreview());
+                    // set button style & content depending on configuration
+                    float availableWidth = EasyMaterialSettings.IconSize();
+                    if (list) {
+                        style = EasyMaterialSettingsStyles.MaterialButtonList;
+                        content = new GUIContent(materialData.GetName(), materialData.GetAssetPreview());
 
-                            // calculate space for text on button and if there's not enough space, clip it
-                            float iconWidth = materialRect.height;
-                            float padding = 4.0f;
-                            availableWidth = (position.width - iconWidth - padding);
-                            content.text = ClipText(content.text, style, availableWidth);
-                        } else if (EasyMaterialSettings.MaterialNameUnderIcon()) {
-                            if (availableWidth < 50.0f) {
-                                style = EasyMaterialStyles.MaterialButtonWithTextSmall;
-                            } else if (availableWidth < 60.0f) {
-                                style = EasyMaterialStyles.MaterialButtonWithTextMedium;
-                            } else {
-                                style = EasyMaterialStyles.MaterialButtonWithText;
-                            }
-
-                            string materialName = ClipText(materialData.GetName(), style, availableWidth);
-                            content = new GUIContent(materialName, materialData.GetAssetPreview(), materialData.GetName());
+                        // calculate space for text on button and if there's not enough space, clip it
+                        float iconWidth = materialRect.height;
+                        float padding = 4.0f;
+                        availableWidth = (position.width - iconWidth - padding);
+                        content.text = ClipText(content.text, style, availableWidth);
+                    } else if (EasyMaterialSettings.MaterialNameUnderIcon()) {
+                        if (availableWidth < 50.0f) {
+                            style = EasyMaterialSettingsStyles.MaterialButtonWithTextSmall;
+                        } else if (availableWidth < 60.0f) {
+                            style = EasyMaterialSettingsStyles.MaterialButtonWithTextMedium;
                         } else {
-                            if (availableWidth < 50.0f) {
-                                style = EasyMaterialStyles.MaterialButtonSmall;
-                            } else {
-                                style = EasyMaterialStyles.MaterialButton;
-                            }
-
-                            content = new GUIContent(materialData.GetAssetPreview(), materialData.GetName());
+                            style = EasyMaterialSettingsStyles.MaterialButtonWithText;
                         }
 
-                        DrawMaterialButton(materialData, materialRect, content, style, dragTarget);
+                        string materialName = ClipText(materialData.GetName(), style, availableWidth);
+                        content = new GUIContent(materialName, materialData.GetAssetPreview(), materialData.GetName());
+                    } else {
+                        if (availableWidth < 50.0f) {
+                            style = EasyMaterialSettingsStyles.MaterialButtonSmall;
+                        } else {
+                            style = EasyMaterialSettingsStyles.MaterialButton;
+                        }
+
+                        content = new GUIContent(materialData.GetAssetPreview(), materialData.GetName());
                     }
 
-                    // update grid position
-                    gridPosition.x += cellSize.x;
-                    if (gridPosition.x > width) {
-                        gridPosition.x = GridSpacing;
-                        gridPosition.y += cellSize.y;
-                    }
+                    DrawMaterialButton(materialData, materialRect, content, style, dragTarget);
                 }
 
-                if (e.type == EventType.Repaint && !mouseOverAnyMaterialRect) {
-                    _hoveredIndex = 0;
+                // update grid position
+                gridPosition.x += cellSize.x;
+                if (gridPosition.x > width) {
+                    gridPosition.x = GridSpacing;
+                    gridPosition.y += cellSize.y;
                 }
+            }
 
-                // handle showing context menu when the user doesn't click on a material
-                if (e.type == EventType.ContextClick) {
-                    ShowContextMenu();
-                }
+            if (e.type == EventType.Repaint && !mouseOverAnyMaterialRect) {
+                _hoveredIndex = 0;
+            }
+
+            // handle showing context menu when the user doesn't click on a material
+            if (e.type == EventType.ContextClick) {
+                ShowContextMenu();
             }
         }
 
         private void ShowContextMenu(MaterialData materialData = null) {
-            GenericMenu menu = new GenericMenu();
+            GenericMenu menu = new();
 
             if (materialData != null) {
                 menu.AddItem(new GUIContent("Remove"), false, () => ContextRemove(materialData));
@@ -603,7 +601,7 @@ namespace Nexcide.EasyMaterials {
                     SaveMaterialsToAsset(path);
                 }
             } else {
-                Log.w("Nothing to save");
+                Log.w(LogLevel, this, "Nothing to save");
             }
         }
 
@@ -675,7 +673,7 @@ namespace Nexcide.EasyMaterials {
             float x = 4.0f;
             float y = position.height - StatusBarHeight;
             float statusBarWidth = (position.width - (x * 2.0f));
-            Rect statusBarRect = new Rect(x, y, statusBarWidth, StatusBarHeight);
+            Rect statusBarRect = new(x, y, statusBarWidth, StatusBarHeight);
 
             using (new GUILayout.AreaScope(statusBarRect)) {
                 using (new HorizontalScope()) {
@@ -685,7 +683,7 @@ namespace Nexcide.EasyMaterials {
 
                     if (EasyMaterialSettings.MaterialCountStatusBar()) {
                         materialCountWidth = 28.0f;
-                        GUILayout.Label(_materials.Count.ToString(), GUILayout.MinWidth(16.0f), GUILayout.MaxWidth(materialCountWidth));
+                        GUILayout.Label($"[{_materials.Count}]", GUILayout.MinWidth(16.0f), GUILayout.MaxWidth(materialCountWidth));
                     }
 
                     float availableWidth = (statusBarWidth - (materialCountWidth + sliderWidth));
@@ -753,7 +751,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void AddMaterial(Material material, Color color, bool ignoreLimit = false) {
-            MaterialData materialData = new MaterialData(material, color);
+            MaterialData materialData = new(material, color);
 
             // the MaterialData.Equals() method is overridden which allows these comparisons to work
             if (!_materials.Contains(materialData)) {
@@ -777,7 +775,7 @@ namespace Nexcide.EasyMaterials {
         }
 
         private void LoadMaterialsFromAsset(string path) {
-            Log.d("LoadMaterialsFromAsset(), path: " + path);
+            Log.d(LogLevel, this, $"LoadMaterialsFromAsset(), path: {path}");
 
             MaterialBundle materialBundle = AssetDatabase.LoadAssetAtPath<MaterialBundle>(path);
 
@@ -800,10 +798,10 @@ namespace Nexcide.EasyMaterials {
                         logMsg += " Note: Window is now locked.";
                     }
 
-                    Log.i(logMsg);
+                    Log.i(LogLevel, this, logMsg);
                 }
             } else {
-                Log.e("Invalid asset file: " + path);
+                Log.e(LogLevel, this, $"Invalid asset file: {path}");
             }
         }
 
@@ -834,7 +832,7 @@ namespace Nexcide.EasyMaterials {
                     logMsg += " Note: Window is now locked.";
                 }
 
-                Log.i(logMsg);
+                Log.i(LogLevel, this, logMsg);
             }
         }
 
@@ -846,16 +844,16 @@ namespace Nexcide.EasyMaterials {
                         AddMaterial(material, color, true);
                         ++count;
                     } else {
-                        Log.w("Skipped loading missing material");
+                        Log.w(LogLevel, this, "Skipped loading missing material");
                     }
                 }
             } else {
-                Log.e("No materials found in asset");
+                Log.e(LogLevel, this, "No materials found in asset");
             }
         }
 
         private void SaveMaterialsToAsset(string path) {
-            Log.d("SaveMaterialsToAsset(), path: " + path);
+            Log.d(LogLevel, this, $"SaveMaterialsToAsset(), path: {path}");
 
             try {
                 MaterialBundle materialBundle = ScriptableObject.CreateInstance<MaterialBundle>();
@@ -866,7 +864,7 @@ namespace Nexcide.EasyMaterials {
                 AssetDatabase.CreateAsset(materialBundle, path);
                 AssetDatabase.SaveAssets();
             } catch (UnityException e) {
-                Log.e("Failed to save materials to: " + path + "\n" + e);
+                Log.e(LogLevel, this, $"Failed to save materials to: {path}\n{e}");
             }
         }
 

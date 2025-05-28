@@ -38,7 +38,9 @@ namespace Nexcide.TileKing {
                 _settings = LoadSettings<TileKingSettings>(SettingsAssetPath);
 
                 if (_settings != null) {
-                    Log.d(_settings._logLevel, _settings, $"Loaded {nameof(TileKingSettings)}");
+                    _settings.name = nameof(TileKingSettings);
+
+                    Log.d(_settings._logLevel, _settings, "Loaded");
                 } else {
                     _settings = CreateInstance<TileKingSettings>();
                     _settings.name = nameof(TileKingSettings);
