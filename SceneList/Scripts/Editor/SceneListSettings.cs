@@ -13,6 +13,7 @@ namespace Nexcide.SceneList {
         public static GUIContent UseBuildSettings = new("Use build settings", "Populate list from build settings instead of folders");
         public static GUIContent ShowFolderLabels = new("Show folder labels", "Whether or not labels are shown in list");
         public static GUIContent Folders = new("Folders", "List of folders used to populate list");
+        public static GUIContent ShowConfirmation = new("Show confirmation on scene change", "Ask if user wants to save any modified scenes in the hierarchy");
         public static GUIContent LogLevel = new("Level of logging", "Useful for debugging");
     }
 
@@ -28,9 +29,11 @@ namespace Nexcide.SceneList {
             AssetsRoot
         }).AsReadOnly();
         private const bool DefaultShowFolderLabels = true;
+        private const bool DefaultShowConfirmation = true;
 
         [SerializeField] private bool _useBuildSettings;
         [SerializeField] private bool _showFolderLabels;
+        [SerializeField] private bool _showConfirmation;
         [SerializeField] private List<string> _foldersList = new();
         [SerializeField] private LogLevel _logLevel;
 
@@ -46,6 +49,10 @@ namespace Nexcide.SceneList {
 
         public static bool ShowFolderLabels() {
             return GetSettings()._showFolderLabels;
+        }
+
+        public static bool ShowConfirmation() {
+            return GetSettings()._showConfirmation;
         }
 
         public static List<string> GetFolders() {
@@ -97,6 +104,7 @@ namespace Nexcide.SceneList {
             }
 
             obj.FindProperty(nameof(_showFolderLabels)).boolValue = DefaultShowFolderLabels;
+            obj.FindProperty(nameof(_showConfirmation)).boolValue = DefaultShowConfirmation;
         }
 
         public static void OnGUI() {
@@ -119,6 +127,7 @@ namespace Nexcide.SceneList {
                 EditorGUILayout.Separator();
 
                 PropertyField(obj, nameof(_showFolderLabels), SettingsContent.ShowFolderLabels);
+                PropertyField(obj, nameof(_showConfirmation), SettingsContent.ShowConfirmation);
                 EditorGUILayout.Separator();
             }
 
