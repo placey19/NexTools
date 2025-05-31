@@ -1,0 +1,19 @@
+{
+    "name": "Nexcide.FastPlay.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:61bb9281e2182dd4eaa1b366592839b9",
+        "GUID:6b218f98faec7e848bc5e3a6e097aed3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
