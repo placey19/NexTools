@@ -7,9 +7,10 @@ using UnityEngine.UIElements;
 
 namespace Nexcide.Editor {
 
-    internal class FastPlay {
+    internal class CheekyToolbar {
 
         private static EditorToolbarToggle _fastPlayButton;
+        private static EditorToolbarButton _openProjectButton;
         private static EnterPlayModeOptions _playModeOptionsCached;
         private static bool _restorePlayModeOptions;
 
@@ -22,7 +23,7 @@ namespace Nexcide.Editor {
                 // get method info for callback method
                 Type[] args = new Type[1] { typeof(VisualElement) };
                 BindingFlags flags = (BindingFlags.NonPublic | BindingFlags.Static);
-                MethodInfo callbackMethodInfo = typeof(FastPlay).GetMethod(nameof(AddFastPlayButton), flags, binder: null, args, modifiers: null);
+                MethodInfo callbackMethodInfo = typeof(CheekyToolbar).GetMethod(nameof(InsertToolbar), flags, binder: null, args, modifiers: null);
 
                 // get event and create delegate
                 Type playModeButtonsClass = ReflectionUtil.GetTypeFromAssembly("UnityEditor.Toolbars.PlayModeButtons");
@@ -38,7 +39,7 @@ namespace Nexcide.Editor {
             }
         }
 
-        private static void AddFastPlayButton(VisualElement container) {
+        private static void InsertToolbar(VisualElement container) {
             // add a space to the toolbar
             VisualElement spacer = new();
             spacer.style.width = 32;
@@ -49,6 +50,20 @@ namespace Nexcide.Editor {
             _fastPlayButton.RegisterValueChangedCallback(OnButtonValueChanged);
             UpdateButton(play: true);
             container.Add(_fastPlayButton);
+
+            // add a small space
+            spacer = new();
+            spacer.style.width = 2;
+            container.Add(spacer);
+
+            // add 'Open C# Project' button - this is the whole thing!
+            _openProjectButton = new() {
+                name = "Open C# Project",
+                tooltip = "Open C# Project",
+                icon = Resources.Load<Texture2D>("CodeIcon")
+            };
+            _openProjectButton.clicked += () => EditorApplication.ExecuteMenuItem("Assets/Open C# Project");
+            container.Add(_openProjectButton);
 
             // register for play mode state changes
             EditorApplication.playModeStateChanged += OnEditorPlayModeStateChanged;
