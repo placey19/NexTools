@@ -17,13 +17,13 @@ namespace Nexcide.Editor {
         [InitializeOnLoadMethod]
         private static void Initialize() {
             // can't access internal PlayModeButtons class without doing some weird assembly definition bridge stuff, so using Reflection instead
-            //PlayModeButtons.onPlayModeButtonsCreated += CreatePlayModeButtons;
+            //PlayModeButtons.onPlayModeButtonsCreated += OnPlayModeButtonsCreated;
 
             try {
                 // get method info for callback method
                 Type[] args = new Type[1] { typeof(VisualElement) };
                 BindingFlags flags = (BindingFlags.NonPublic | BindingFlags.Static);
-                MethodInfo callbackMethodInfo = typeof(CheekyToolbar).GetMethod(nameof(InsertToolbar), flags, binder: null, args, modifiers: null);
+                MethodInfo callbackMethodInfo = typeof(CheekyToolbar).GetMethod(nameof(OnPlayModeButtonsCreated), flags, binder: null, args, modifiers: null);
 
                 // get event and create delegate
                 Type playModeButtonsClass = ReflectionUtil.GetTypeFromAssembly("UnityEditor.Toolbars.PlayModeButtons");
@@ -39,24 +39,30 @@ namespace Nexcide.Editor {
             }
         }
 
-        private static void InsertToolbar(VisualElement container) {
-            // add a space to the toolbar
+        private static void OnPlayModeButtonsCreated(VisualElement container) {
+            AddSpace(container, 32);
+            AddFastPlayButton(container);
+            AddSpace(container, 2);
+            AddOpenProjectButton(container);
+
+            // register for editor play mode state changes, for updating the 'Fast Play' button accordingly
+            EditorApplication.playModeStateChanged += OnEditorPlayModeStateChanged;
+        }
+
+        private static void AddSpace(VisualElement container, int width) {
             VisualElement spacer = new();
-            spacer.style.width = 32;
+            spacer.style.width = width;
             container.Add(spacer);
+        }
 
-            // create and add the fast play button to the toolbar
+        private static void AddFastPlayButton(VisualElement container) {
             _fastPlayButton = new();
-            _fastPlayButton.RegisterValueChangedCallback(OnButtonValueChanged);
-            UpdateButton(play: true);
+            _fastPlayButton.RegisterValueChangedCallback(OnFastPlayButtonValueChanged);
+            UpdateFastPlayButton(play: true);
             container.Add(_fastPlayButton);
+        }
 
-            // add a small space
-            spacer = new();
-            spacer.style.width = 2;
-            container.Add(spacer);
-
-            // add 'Open C# Project' button - this is the whole thing!
+        private static void AddOpenProjectButton(VisualElement container) {
             _openProjectButton = new() {
                 name = "Open C# Project",
                 tooltip = "Open C# Project",
@@ -64,12 +70,9 @@ namespace Nexcide.Editor {
             };
             _openProjectButton.clicked += () => EditorApplication.ExecuteMenuItem("Assets/Open C# Project");
             container.Add(_openProjectButton);
-
-            // register for play mode state changes
-            EditorApplication.playModeStateChanged += OnEditorPlayModeStateChanged;
         }
 
-        private static void OnButtonValueChanged(ChangeEvent<bool> changeEvent) {
+        private static void OnFastPlayButtonValueChanged(ChangeEvent<bool> changeEvent) {
             if (changeEvent.newValue) {
                 _playModeOptionsCached = EditorSettings.enterPlayModeOptions;
                 _restorePlayModeOptions = true;
@@ -85,7 +88,7 @@ namespace Nexcide.Editor {
             switch (playModeStateChange) {
                 case PlayModeStateChange.ExitingEditMode: {
                     _fastPlayButton.SetValueWithoutNotify(true);
-                    UpdateButton(play: false);
+                    UpdateFastPlayButton(play: false);
                     break;
                 }
 
@@ -96,19 +99,19 @@ namespace Nexcide.Editor {
                     }
 
                     _fastPlayButton.SetValueWithoutNotify(true);
-                    UpdateButton(play: false);
+                    UpdateFastPlayButton(play: false);
                     break;
                 }
 
                 case PlayModeStateChange.ExitingPlayMode: {
                     _fastPlayButton.SetValueWithoutNotify(false);
-                    UpdateButton(play: true);
+                    UpdateFastPlayButton(play: true);
                     break;
                 }
             }
         }
 
-        private static void UpdateButton(bool play) {
+        private static void UpdateFastPlayButton(bool play) {
             if (play) {
                 _fastPlayButton.name = "Fast Play";
                 _fastPlayButton.tooltip = "Fast Play";
