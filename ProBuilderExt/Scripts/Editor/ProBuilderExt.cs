@@ -34,6 +34,7 @@ namespace Nexcide.ProBuilder {
         }
 
         private void OnEnable() {
+            Selection.selectionChanged += Repaint;
             SceneView.beforeSceneGui += OnBeforeSceneGUI;
             SceneView.duringSceneGui += OnSceneGUI;
             ProBuilderEditor.selectionUpdated += OnSelectionUpdated;
@@ -41,6 +42,7 @@ namespace Nexcide.ProBuilder {
         }
 
         private void OnDisable() {
+            Selection.selectionChanged -= Repaint;
             SceneView.beforeSceneGui -= OnBeforeSceneGUI;
             SceneView.duringSceneGui -= OnSceneGUI;
             ProBuilderEditor.selectionUpdated -= OnSelectionUpdated;
