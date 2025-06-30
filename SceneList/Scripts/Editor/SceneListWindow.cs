@@ -12,7 +12,7 @@ namespace Nexcide.SceneList {
         [MenuItem("Nexcide/Scene List", false, 37)]
         private static void Initialize() {
             EditorWindow editorWindow = GetWindow<SceneListWindow>(typeof(SceneListWindow));
-            editorWindow.titleContent = new GUIContent(editorWindow.name);
+            editorWindow.titleContent = new GUIContent("Scene List");
             editorWindow.Show();
         }
 
