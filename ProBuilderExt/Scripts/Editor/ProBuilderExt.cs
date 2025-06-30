@@ -26,7 +26,7 @@ namespace Nexcide.ProBuilder {
         private Vector3 _pivotPosition;
         private Vector3 _pivotStartPosition;
 
-        [MenuItem("Nexcide/ProBuilder Ext", false, 34)]
+        [MenuItem("Nexcide/ProBuilder Ext", false, 2)]
         private static void Init() {
             EditorWindow editorWindow = GetWindow<ProBuilderExt>(typeof(ProBuilderExt));
             editorWindow.titleContent = new GUIContent("ProBuilderExt");

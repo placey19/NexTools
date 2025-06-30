@@ -9,7 +9,7 @@ namespace Nexcide.SceneList {
 
     public class SceneListWindow : EditorWindow, IHasCustomMenu {
 
-        [MenuItem("Nexcide/Scene List", false, 37)]
+        [MenuItem("Nexcide/Scene List", false, 3)]
         private static void Initialize() {
             EditorWindow editorWindow = GetWindow<SceneListWindow>(typeof(SceneListWindow));
             editorWindow.titleContent = new GUIContent("Scene List");

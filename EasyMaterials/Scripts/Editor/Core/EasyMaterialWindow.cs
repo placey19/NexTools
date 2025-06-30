@@ -48,7 +48,7 @@ namespace Nexcide.EasyMaterials {
 
         public LogLevel LogLevel => EasyMaterialSettings.GetLogLevel();
 
-        [MenuItem("Nexcide/Easy Materials")]
+        [MenuItem("Nexcide/Easy Materials", false, 1)]
         private static void ShowWindow() {
             EasyMaterialWindow window = GetWindow<EasyMaterialWindow>(WindowTitle);
             window.Show();
