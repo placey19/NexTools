@@ -133,13 +133,16 @@ namespace Nexcide.SceneList {
                     if (Application.isPlaying) {
                         SceneManager.LoadScene(sceneData.AssetPath);
                     } else {
+                        bool openScene = true;
                         if (SceneListSettings.ShowConfirmation()) {
-                            EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                            openScene = EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
                         }
 
-                        Scene openedScene = EditorSceneManager.OpenScene(sceneData.AssetPath, OpenSceneMode.Single);
-                        if (!openedScene.IsValid()) {
-                            Log.e(this, $"Failed to open scene with path: {sceneData.AssetPath}");
+                        if (openScene) {
+                            Scene openedScene = EditorSceneManager.OpenScene(sceneData.AssetPath, OpenSceneMode.Single);
+                            if (!openedScene.IsValid()) {
+                                Log.e(this, $"Failed to open scene with path: {sceneData.AssetPath}");
+                            }
                         }
                     }
                 } else if (e.button == 1) {
